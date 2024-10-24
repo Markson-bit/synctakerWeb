@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35312.102
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "synctakerWeb", "synctakerWeb\synctakerWeb.csproj", "{D3EE9B7B-66C8-4EFE-992C-1D6E9AA5B0CA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "synctakerWeb", "synctakerWeb\synctakerWeb.csproj", "{D3EE9B7B-66C8-4EFE-992C-1D6E9AA5B0CA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "synctakerAPI", "synctakerAPI\synctakerAPI.csproj", "{214EB129-F5C2-43A1-82F8-5102F61C1582}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "synctakerAPI", "synctakerAPI\synctakerAPI.csproj", "{214EB129-F5C2-43A1-82F8-5102F61C1582}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
