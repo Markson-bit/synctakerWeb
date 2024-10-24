@@ -1,6 +1,6 @@
 # synctaker
 
-Web application for projects management in IT industry
+Web application for projects management in IT industry with integrated API system for data migration
 
 ### Tech stack
 
