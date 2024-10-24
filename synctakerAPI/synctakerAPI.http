@@ -1,0 +1,6 @@
+@synctakerAPI_HostAddress = http://localhost:5110
+
+GET {{synctakerAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
