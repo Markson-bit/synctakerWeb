@@ -12,7 +12,7 @@ Web application for projects management in IT industry
   1. --- <br>
 
 
-  ![image](https://github.com/user-attachments/assets/238455d6-b517-4e61-b16a-c4e33d9b3275)
+![image](https://github.com/user-attachments/assets/c1c92f81-e7a5-4f5e-8399-825db7429a98)
 
 
   
