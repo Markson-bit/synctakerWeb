@@ -1,4 +1,6 @@
 ﻿@page "/login"
+@rendermode InteractiveServer
+@inject NavigationManager Navigation
 
 <div class="page d-flex justify-content-center align-items-center vh-100">
     <main>
@@ -19,9 +21,16 @@
                 </div>
 
                 <div class="d-grid">
-                    <button type="submit" class="btn btn-primary">Sign In</button>
+                    <button @onclick="CheckSignIn" type="submit" class="btn btn-primary">Sign In</button>
                 </div>
             </div>
         </article>
     </main>
 </div>
+
+@code{
+    private void CheckSignIn()
+    {
+        // Check if the username and password are correct, return result
+    }
+}
