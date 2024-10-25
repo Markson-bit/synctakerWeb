@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Options;
 using synctakerWeb.Components;
 
 namespace synctakerWeb
@@ -8,11 +9,28 @@ namespace synctakerWeb
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("BlazorCorsPolicy", policy =>
+                {
+                    policy.WithOrigins("https://localhost:7299") // Zast¹p [TWOJE_IP] i [PORT] odpowiednimi wartoœciami dla Blazor Server
+                          .AllowAnyMethod()
+                          .AllowAnyHeader();
+                });
+            });
+
             // Add services to the container.
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
+            builder.Services.AddScoped<WeatherForecastService>();
+            builder.Services.AddHttpClient("WeatherApi", client =>
+            {
+                client.BaseAddress = new Uri("https://localhost:7219");
+            });
 
             var app = builder.Build();
+
+            app.UseCors("BlazorCorsPolicy");
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
