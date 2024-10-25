@@ -4,7 +4,7 @@ Web application for projects management in IT industry with integrated API syste
 
 ### Tech stack
 
-* Blazor
+* Blazor Server
 * ASP.NET Web Api
 * MSSQL
  
@@ -12,7 +12,7 @@ Web application for projects management in IT industry with integrated API syste
   1. --- <br>
 
 
-![image](https://github.com/user-attachments/assets/c1c92f81-e7a5-4f5e-8399-825db7429a98)
+![image](https://github.com/user-attachments/assets/6f52ceea-1e22-4e4a-9067-1081d3857cf8)
 
 
   
