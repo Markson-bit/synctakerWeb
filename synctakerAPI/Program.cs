@@ -1,4 +1,6 @@
 
+using synctakerAPI.Core;
+
 namespace synctakerAPI
 {
     public class Program
@@ -13,6 +15,8 @@ namespace synctakerAPI
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            builder.Services.AddScoped<AppDbContext>();
 
             var app = builder.Build();
 
