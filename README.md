@@ -4,10 +4,8 @@ Web application for projects management in IT industry with integrated API syste
 
 ### Tech stack
 
-* Blazor Server
-[![My Skills](https://skillicons.dev/icons?i=blazor)](https://skillicons.dev)
-* ASP.NET Web Api
-* MSSQL
+*[![MySkills](https://skillicons.dev/icons?i=cs)](https://skillicons.dev)* 
+* 
  
 ### Functions:
   1. --- <br>
