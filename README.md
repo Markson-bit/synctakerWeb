@@ -4,8 +4,14 @@ Web application for projects management in IT industry with integrated API syste
 
 ### Tech stack
 
-*[![MySkills](https://skillicons.dev/icons?i=cs)](https://skillicons.dev)* 
-* 
+
+[![My Skills](https://skillicons.dev/icons?i=html,css)](https://skillicons.dev)
+
+[![MySkills](https://skillicons.dev/icons?i=cs)](https://skillicons.dev)
+
+[![My Skills](https://skillicons.dev/icons?i=net)](https://skillicons.dev)
+
+[![My Skills](https://skillicons.dev/icons?i=docker)](https://skillicons.dev)
  
 ### Functions:
   1. --- <br>
