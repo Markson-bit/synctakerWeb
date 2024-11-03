@@ -1,4 +1,5 @@
 
+using Microsoft.EntityFrameworkCore;
 using synctakerAPI.Core;
 
 namespace synctakerAPI
@@ -16,7 +17,10 @@ namespace synctakerAPI
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            builder.Services.AddScoped<AppDbContext>();
+            //builder.Services.AddScoped<AppDbContext>();
+
+            builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 
             var app = builder.Build();
 
