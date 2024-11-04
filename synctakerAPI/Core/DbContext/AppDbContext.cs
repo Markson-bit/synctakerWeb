@@ -10,8 +10,9 @@ namespace synctakerAPI.Core
         //    _config = config;
         //}
 
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
-
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
+        {
+        }
 
         //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         //{
@@ -19,5 +20,6 @@ namespace synctakerAPI.Core
         //}
 
         public DbSet<WeatherForecast> WeatherForecasts { get; set; }
+        public DbSet<User> User { get; set; }
     }
 }
