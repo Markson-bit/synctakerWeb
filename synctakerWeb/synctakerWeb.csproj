@@ -4,14 +4,17 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <Configurations>Debug;Release;Duo</Configurations>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="Components\Pages\Home.razor.css" />
+    <None Remove="Components\Pages\Login\Login.razor.css" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="Components\Pages\Home.razor.css" />
+    <Content Include="Components\Pages\Login\Login.razor.css" />
   </ItemGroup>
 
 </Project>

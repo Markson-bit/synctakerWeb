@@ -10,15 +10,20 @@ EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Duo|Any CPU = Duo|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{D3EE9B7B-66C8-4EFE-992C-1D6E9AA5B0CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D3EE9B7B-66C8-4EFE-992C-1D6E9AA5B0CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3EE9B7B-66C8-4EFE-992C-1D6E9AA5B0CA}.Duo|Any CPU.ActiveCfg = Duo|Any CPU
+		{D3EE9B7B-66C8-4EFE-992C-1D6E9AA5B0CA}.Duo|Any CPU.Build.0 = Duo|Any CPU
 		{D3EE9B7B-66C8-4EFE-992C-1D6E9AA5B0CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D3EE9B7B-66C8-4EFE-992C-1D6E9AA5B0CA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{214EB129-F5C2-43A1-82F8-5102F61C1582}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{214EB129-F5C2-43A1-82F8-5102F61C1582}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{214EB129-F5C2-43A1-82F8-5102F61C1582}.Duo|Any CPU.ActiveCfg = Duo|Any CPU
+		{214EB129-F5C2-43A1-82F8-5102F61C1582}.Duo|Any CPU.Build.0 = Duo|Any CPU
 		{214EB129-F5C2-43A1-82F8-5102F61C1582}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{214EB129-F5C2-43A1-82F8-5102F61C1582}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
