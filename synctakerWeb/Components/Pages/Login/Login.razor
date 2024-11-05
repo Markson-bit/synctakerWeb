@@ -7,7 +7,6 @@
 <div class="container-fluid vh-100 d-flex justify-content-center align-items-center position-relative">
     <img src="data/back.jpg" class="background-image" alt="Background Image" />
 
-
     @* DEVLOG *@
     <div class="user-info position-absolute p-2" style="top: 10px; left: 10px;">
         @if (user != null)
@@ -21,9 +20,7 @@
         }
     </div>
 
-
-
-    <div class="login-form card p-4">
+    <div class="login-form card p-4" style="width: 100%; max-width: 400px;">
         <div class="text-center mb-4">
             <img src="data/logoBG.png" alt="Synctaker Logo" style="max-width: 150px; height: auto;" />
         </div>
@@ -41,18 +38,42 @@
         <div class="d-grid">
             <button @onclick="CheckSignIn" type="submit" class="btn btn-primary">Sign In</button>
         </div>
+
+        @* ERROR *@
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <div class="alert alert-danger mt-3 text-center p-2" role="alert" style="word-wrap: break-word; max-width: 100%;">
+                @errorMessage
+            </div>
+        }
     </div>
 </div>
 
 @code {
     private User user;
+    private string errorMessage;
 
     private void CheckSignIn()
     {
+        bool loginSuccessful = true;
+
+        if (loginSuccessful)
+        {
+            NavigateToBoard();
+        }
+        else
+        {
+            errorMessage = "Invalid username or password. Please try again.";
+        }
+    }
+
+    private void NavigateToBoard()
+    {
+        Navigation.NavigateTo("/dashboard");
     }
 
     protected override async Task OnInitializedAsync()
     {
-        user = await UserService.GetUserAsync();
+        //user = await UserService.GetUserAsync();
     }
 }
