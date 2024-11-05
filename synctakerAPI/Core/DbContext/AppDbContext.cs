@@ -18,8 +18,6 @@ namespace synctakerAPI.Core
         //{
         //    optionsBuilder.UseSqlServer(_config.GetConnectionString("DatabaseConnection"));
         //}
-
-        public DbSet<WeatherForecast> WeatherForecasts { get; set; }
         public DbSet<User> User { get; set; }
     }
 }

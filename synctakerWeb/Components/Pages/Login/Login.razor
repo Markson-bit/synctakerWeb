@@ -1,34 +1,53 @@
 ﻿@page "/login"
+@using synctakerWeb.Models
 @rendermode InteractiveServer
 @inject NavigationManager Navigation
+@inject UserService UserService
 
 <div class="container-fluid vh-100 d-flex justify-content-center align-items-center position-relative">
     <img src="data/back.jpg" class="background-image" alt="Background Image" />
 
-        <div class="login-form card p-4">
-            <div class="text-center mb-4">
-                <img src="data/logoBG.png" alt="Synctaker Logo" style="max-width: 150px; height: auto;" />
-            </div>
+    <div class="user-info position-absolute p-2" style="top: 10px; left: 10px;">
+        @if (user != null)
+        {
+            <p><strong>User Info:</strong></p>
+            <p>Id: @user.Id</p>
+            <p>FN: @user.FirstName</p>
+            <p>LN: @user.LastName</p>
+            <p>Admin: @user.AdminRights</p>
+        }
+    </div>
 
-            <div class="mb-3">
-                <label for="username" class="form-label">Username:</label>
-                <input type="text" class="form-control" id="username" placeholder="Enter username" />
-            </div>
-
-            <div class="mb-3">
-                <label for="password" class="form-label">Password:</label>
-                <input type="password" class="form-control" id="password" placeholder="Enter password" />
-            </div>
-
-            <div class="d-grid">
-                <button @onclick="CheckSignIn" type="submit" class="btn btn-primary">Sign In</button>
-            </div>
+    <div class="login-form card p-4">
+        <div class="text-center mb-4">
+            <img src="data/logoBG.png" alt="Synctaker Logo" style="max-width: 150px; height: auto;" />
         </div>
+
+        <div class="mb-3">
+            <label for="username" class="form-label">Username:</label>
+            <input type="text" class="form-control" id="username" placeholder="Enter username" />
+        </div>
+
+        <div class="mb-3">
+            <label for="password" class="form-label">Password:</label>
+            <input type="password" class="form-control" id="password" placeholder="Enter password" />
+        </div>
+
+        <div class="d-grid">
+            <button @onclick="CheckSignIn" type="submit" class="btn btn-primary">Sign In</button>
+        </div>
+    </div>
 </div>
 
 @code {
+    private User user;
+
     private void CheckSignIn()
     {
-        // Check if the username and password are correct, return result
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        user = await UserService.GetUserAsync();
     }
 }

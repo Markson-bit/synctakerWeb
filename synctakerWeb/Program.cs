@@ -23,8 +23,10 @@ namespace synctakerWeb
             // Add services to the container.
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
-            builder.Services.AddScoped<WeatherForecastService>();
-            builder.Services.AddHttpClient("WeatherApi", client =>
+
+            builder.Services.AddScoped<UserService>();
+
+            builder.Services.AddHttpClient("ApiClient", client =>
             {
                 client.BaseAddress = new Uri("https://localhost:7219");
             });
