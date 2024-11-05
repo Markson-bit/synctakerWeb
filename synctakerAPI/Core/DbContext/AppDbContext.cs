@@ -9,6 +9,7 @@ namespace synctakerAPI.Core
         //{
         //    _config = config;
         //}
+        public DbSet<User> User { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
@@ -18,6 +19,5 @@ namespace synctakerAPI.Core
         //{
         //    optionsBuilder.UseSqlServer(_config.GetConnectionString("DatabaseConnection"));
         //}
-        public DbSet<User> User { get; set; }
     }
 }

@@ -24,6 +24,7 @@
   <ItemGroup>
     <Folder Include="Core\Service\" />
     <Folder Include="Core\Repository\" />
+    <Folder Include="Migrations\" />
   </ItemGroup>
 
 </Project>
