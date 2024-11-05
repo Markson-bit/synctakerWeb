@@ -22,6 +22,7 @@ namespace synctakerAPI.Controllers
                 Id = 1,
                 FirstName = "Kacper",
                 LastName = "Górski",
+                Email = "kac.per@kacper.de",
                 AdminRights = true
             };
         }

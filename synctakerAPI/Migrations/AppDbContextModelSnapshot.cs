@@ -32,6 +32,10 @@ namespace synctakerAPI.Migrations
                     b.Property<bool>("AdminRights")
                         .HasColumnType("bit");
 
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
