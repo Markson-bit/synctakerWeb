@@ -1,25 +1,78 @@
-﻿<div class="page d-flex justify-content-center align-items-center vh-100">
-    <main>
-        <article class="content px-4">
-            <div class="login-form card p-4">
-                <div class="text-center mb-4">
-                    <img src="data/logo.png" alt="Synctaker Logo" style="max-width: 150px; height: auto;" />
-                </div>
+﻿@page "/login"
+@using synctakerWeb.Models
+@rendermode InteractiveServer
+@inject NavigationManager Navigation
+@inject UserService UserService
 
-                <div class="mb-3">
-                    <label for="username" class="form-label">Username:</label>
-                    <input type="text" class="form-control" id="username" placeholder="Enter username" />
-                </div>
+<div class="container-fluid vh-100 d-flex justify-content-center align-items-center position-relative">
+    <img src="data/back.jpg" class="background-image" alt="Background Image" />
 
-                <div class="mb-3">
-                    <label for="password" class="form-label">Password:</label>
-                    <input type="password" class="form-control" id="password" placeholder="Enter password" />
-                </div>
+    @* DEVLOG *@
+    <div class="user-info position-absolute p-2" style="top: 10px; left: 10px;">
+        @if (user != null)
+        {
+            <p><strong>DEVLOG: User Info:</strong></p>
+            <p>Id: @user.Id</p>
+            <p>FN: @user.FirstName</p>
+            <p>LN: @user.LastName</p>
+            <p>Email: @user.Email</p>
+            <p>Admin: @user.AdminRights</p>
+        }
+    </div>
 
-                <div class="d-grid">
-                    <button type="submit" class="btn btn-primary">Login</button>
-                </div>
+    <div class="login-form card p-4" style="width: 100%; max-width: 400px;">
+        <div class="text-center mb-4">
+            <img src="data/logoBG.png" alt="Synctaker Logo" style="max-width: 150px; height: auto;" />
+        </div>
+
+        <div class="mb-3">
+            <label for="username" class="form-label">Username:</label>
+            <input type="text" class="form-control" id="username" @bind="username" placeholder="Enter username"/>
+        </div>
+
+        <div class="mb-3">
+            <label for="password" class="form-label">Password:</label>
+            <input type="password" class="form-control" id="password" @bind="password" placeholder="Enter password"/>
+        </div>
+
+        <div class="d-grid">
+            <button @onclick="CheckSignIn" type="submit" class="btn btn-primary">Sign In</button>
+        </div>
+
+        @* ERROR *@
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <div class="alert alert-danger mt-3 text-center p-2" role="alert" style="word-wrap: break-word; max-width: 100%;">
+                @errorMessage
             </div>
-        </article>
-    </main>
+        }
+    </div>
 </div>
+
+@code {
+    private string? username;
+    private string? password;
+
+    private User? user;
+    private string errorMessage;
+
+    private async Task CheckSignIn()
+    {
+        if(username != null && password != null)
+        {
+            string hashedPassword = UserService.HashPassword(password);
+            user = await UserService.AuthenticateUserAsync(username, password);
+        }
+
+        if (user != null)
+        {
+            UserService.CurrentUser = user;
+            Navigation.NavigateTo("/dashboard");
+        }
+
+        else
+        {
+            errorMessage = "Invalid username or password. Please try again.";
+        }
+    }
+}
