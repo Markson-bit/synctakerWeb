@@ -27,12 +27,12 @@
 
         <div class="mb-3">
             <label for="username" class="form-label">Username:</label>
-            <input type="text" class="form-control" id="username" placeholder="Enter username" />
+            <input type="text" class="form-control" id="username" @bind="username" placeholder="Enter username"/>
         </div>
 
         <div class="mb-3">
             <label for="password" class="form-label">Password:</label>
-            <input type="password" class="form-control" id="password" placeholder="Enter password" />
+            <input type="password" class="form-control" id="password" @bind="password" placeholder="Enter password"/>
         </div>
 
         <div class="d-grid">
@@ -50,30 +50,29 @@
 </div>
 
 @code {
-    private User user;
+    private string? username;
+    private string? password;
+
+    private User? user;
     private string errorMessage;
 
-    private void CheckSignIn()
+    private async Task CheckSignIn()
     {
-        bool loginSuccessful = true;
-
-        if (loginSuccessful)
+        if(username != null && password != null)
         {
-            NavigateToBoard();
+            string hashedPassword = UserService.HashPassword(password);
+            user = await UserService.AuthenticateUserAsync(username, password);
         }
+
+        if (user != null)
+        {
+            UserService.CurrentUser = user;
+            Navigation.NavigateTo("/dashboard");
+        }
+
         else
         {
             errorMessage = "Invalid username or password. Please try again.";
         }
-    }
-
-    private void NavigateToBoard()
-    {
-        Navigation.NavigateTo("/dashboard");
-    }
-
-    protected override async Task OnInitializedAsync()
-    {
-        //user = await UserService.GetUserAsync();
     }
 }
