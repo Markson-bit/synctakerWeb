@@ -11,7 +11,7 @@ using synctakerAPI.Core;
 namespace synctakerAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241105203221_InitUser")]
+    [Migration("20241112210908_InitUser")]
     partial class InitUser
     {
         /// <inheritdoc />
@@ -23,6 +23,27 @@ namespace synctakerAPI.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("synctakerAPI.Core.Project", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ProjectDesc")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProjectName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Project");
+                });
 
             modelBuilder.Entity("synctakerAPI.Core.User", b =>
                 {
@@ -44,6 +65,10 @@ namespace synctakerAPI.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

@@ -1,53 +1,12 @@
 ﻿@page "/dashboard"
 @using synctakerWeb.Models
+@using synctakerWeb.Components.Layout
 @rendermode InteractiveServer
 @inject NavigationManager Navigation
+@layout MainLayout
 
-<div class="container-fluid vh-100 p-0 d-flex flex-column">
-    <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom px-4">
-        <a class="navbar-brand d-flex align-items-center" href="#">
-            <img src="data/logoBG.png" alt="Synctaker Logo" style="max-width: 50px; height: auto;" />
-            <span class="ms-2 fw-bold text-custom">synctaker</span>
-        </a>
-
-        <div class="collapse navbar-collapse">
-            <ul class="navbar-nav fw-bold ms-auto me-auto justify-content-around w-100">
-                <li class="nav-item"><a class="nav-link text-danger" href="#">Dashboard</a></li>
-                <li class="nav-item"><a class="nav-link text-danger" href="#">Projects</a></li>
-                <li class="nav-item"><a class="nav-link text-danger" href="#">Tasks</a></li>
-                <li class="nav-item"><a class="nav-link text-danger" href="#">Team management</a></li>
-            </ul>
-
-            <div class="d-flex align-items-center">
-                <a href="#" class="me-3">
-                    <img src="data/settings.png" alt="Settings" style="width: 30px; height: auto;" />
-                </a>
-                <a href="#">
-                    <img src="data/profile.png" alt="Profile" style="width: 30px; height: auto;" />
-                </a>
-            </div>
-        </div>
-
-
-
-        <div class="d-flex align-items-center">
-            <a href="#" class="me-3"><i class="bi bi-gear" style="font-size: 1.5rem;"></i></a>
-            <a href="#"><i class="bi bi-person-circle" style="font-size: 1.5rem;"></i></a>
-        </div>
-    </nav>
-
-    <div class="d-flex align-items-center bg-light p-3 border-bottom">
-        <button class="btn btn-light border me-2">Sort</button>
-        <input type="text" class="form-control w-25" placeholder="Find..." />
-@*         <button class="btn btn-light ms-2">
-            <i class="bi bi-search"></i>
-        </button> *@
-    </div>
-
-    <div class="flex-grow-1 p-4">
-        <div class="content-area bg-custom-light rounded-3" style="height: 100%;"></div>
-    </div>
-
+<div class="flex-grow-1 p-4">
+    <div class="content-area bg-custom-light rounded-3" style="height: 500px;"></div>
 </div>
 
 @code {

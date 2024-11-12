@@ -1,10 +1,42 @@
 ﻿@inherits LayoutComponentBase
 
-<div class="page">
-    <main>
+<div class="container-fluid vh-100 p-0 d-flex flex-column">
+    <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom px-4">
+        <a class="navbar-brand d-flex align-items-center" href="/dashboard">
+            <img src="data/logoBG.png" alt="Synctaker Logo" style="max-width: 50px; height: auto;" />
+            <span class="ms-2 fw-bold text-custom">synctaker</span>
+        </a>
+
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav fw-bold ms-auto me-auto justify-content-around w-100">
+                <li class="nav-item"><a class="nav-link text-danger" href="/dashboard">Dashboard</a></li>
+                <li class="nav-item"><a class="nav-link text-danger" href="/projects">Projects</a></li>
+                <li class="nav-item"><a class="nav-link text-danger" href="#">Tasks</a></li>
+                <li class="nav-item"><a class="nav-link text-danger" href="#">Team management</a></li>
+            </ul>
+
+            <div class="d-flex align-items-center">
+                <a href="#" class="me-3">
+                    <img src="data/settings.png" alt="Settings" style="width: 30px; height: auto;" />
+                </a>
+                <a href="#">
+                    <img src="data/profile.png" alt="Profile" style="width: 30px; height: auto;" />
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="d-flex align-items-center bg-light p-3 border-bottom">
+        <button class="btn btn-light border me-2">Sort</button>
+        <input type="text" class="form-control w-25" placeholder="Find..." />
+    </div>
+
+    <!-- Begin of page -->
+    <div class="flex-grow-1 p-4">
         @Body
-    </main>
+    </div>
 </div>
+
 
 <div id="blazor-error-ui">
     An unhandled error has occurred.
