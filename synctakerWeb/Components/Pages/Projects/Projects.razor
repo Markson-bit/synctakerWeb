@@ -3,7 +3,60 @@
 @rendermode InteractiveServer
 @inject NavigationManager Navigation
 
+<div class="container-fluid">
+    <div class="d-flex justify-content-end my-3">
+        <button class="btn btn-primary" @onclick="ShowAddProjectModal">Add Project</button>
+    </div>
+
+    <!-- page body -->
+    <div>
+    </div>
+</div>
+
+@if (isAddProjectModalVisible)
+{
+    <div class="modal-overlay">
+        <div class="modal-content">
+            <h5>Add project</h5>
+            <form>
+                <div class="mb-3">
+                    <label for="projectName" class="form-label">Project name</label>
+                    <input type="text" id="projectName" class="form-control" @bind="projectName" />
+                </div>
+                <div class="mb-3">
+                    <label for="projectDescription" class="form-label">Description</label>
+                    <textarea id="projectDescription" class="form-control" @bind="projectDescription"></textarea>
+                </div>
+                <div class="d-flex justify-content-end gap-2">
+                    <button type="button" class="btn btn-secondary" @onclick="HideAddProjectModal">Cancel</button>
+                    <button type="button" class="btn btn-primary" @onclick="AddProject">Add Project</button>
+                </div>
+            </form>
+        </div>
+    </div>
+}
 
 @code {
+    private bool isAddProjectModalVisible = false;
+    private string projectName;
+    private string projectDescription;
 
+    private void ShowAddProjectModal()
+    {
+        isAddProjectModalVisible = true;
+    }
+
+    private void HideAddProjectModal()
+    {
+        isAddProjectModalVisible = false;
+    }
+
+    private void AddProject()
+    {
+        // Send to API
+        if (!string.IsNullOrEmpty(projectName))
+        {
+            HideAddProjectModal();
+        }
+    }
 }
