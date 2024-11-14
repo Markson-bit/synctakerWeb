@@ -30,17 +30,11 @@ namespace synctakerAPI.Controllers
             return Unauthorized("Invalid username or password");
         }
 
-        //[HttpGet(Name = "GetUser")]
-        //public User Get()
-        //{
-        //    return new User
-        //    {
-        //        Id = 1,
-        //        FirstName = "Kacper",
-        //        LastName = "Górski",
-        //        Email = "kac.per@kacper.de",
-        //        AdminRights = true
-        //    };
-        //}
+        [HttpGet("users")]
+        public List<User> GetUsers()
+        {
+            var users = _userService.GetUsers();
+            return users;
+        }
     }
 }

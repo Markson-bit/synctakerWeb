@@ -11,8 +11,8 @@ using synctakerAPI.Core;
 namespace synctakerAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241112210908_InitUser")]
-    partial class InitUser
+    [Migration("20241114131309_InitCreate")]
+    partial class InitCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -45,6 +45,21 @@ namespace synctakerAPI.Migrations
                     b.ToTable("Project");
                 });
 
+            modelBuilder.Entity("synctakerAPI.Core.Project2User", b =>
+                {
+                    b.Property<int>("ProjectId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProjectId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Project2User");
+                });
+
             modelBuilder.Entity("synctakerAPI.Core.User", b =>
                 {
                     b.Property<int>("Id")
@@ -75,6 +90,35 @@ namespace synctakerAPI.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("User");
+                });
+
+            modelBuilder.Entity("synctakerAPI.Core.Project2User", b =>
+                {
+                    b.HasOne("synctakerAPI.Core.Project", "Project")
+                        .WithMany("ProjectUsers")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("synctakerAPI.Core.User", "User")
+                        .WithMany("ProjectUsers")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Project");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("synctakerAPI.Core.Project", b =>
+                {
+                    b.Navigation("ProjectUsers");
+                });
+
+            modelBuilder.Entity("synctakerAPI.Core.User", b =>
+                {
+                    b.Navigation("ProjectUsers");
                 });
 #pragma warning restore 612, 618
         }

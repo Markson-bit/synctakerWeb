@@ -25,6 +25,7 @@ namespace synctakerWeb
                 .AddInteractiveServerComponents();
 
             builder.Services.AddScoped<UserService>();
+            builder.Services.AddScoped<ProjectService>();
 
             builder.Services.AddHttpClient("ApiClient", client =>
             {

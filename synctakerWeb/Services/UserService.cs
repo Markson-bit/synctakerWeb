@@ -42,5 +42,10 @@ public class UserService
         }
     }
 
+    public async Task<List<User>> GetUsersAsync()
+    {
+        return await _httpClient.GetFromJsonAsync<List<User>>("/User/users");
+    }
+
     public User CurrentUser { get; set; } // Stores logged User
 }
