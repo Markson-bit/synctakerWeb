@@ -1,4 +1,6 @@
-﻿namespace synctakerAPI.Core
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace synctakerAPI.Core
 {
     public class ProjectRepository : IProjectRepository
     {
@@ -31,6 +33,11 @@
             await _context.SaveChangesAsync();
 
             return project.Id;
+        }
+
+        public async Task<List<Project>> GetAllProjectsAsync()
+        {
+            return await _context.Project.ToListAsync();
         }
     }
 }

@@ -19,4 +19,9 @@ public class ProjectService
         var response = await _httpClient.PostAsJsonAsync("Project/create", request);
         return response.IsSuccessStatusCode;
     }
+
+    public async Task<List<Project>> GetProjectsAsync()
+    {
+        return await _httpClient.GetFromJsonAsync<List<Project>>("Project");
+    }
 }

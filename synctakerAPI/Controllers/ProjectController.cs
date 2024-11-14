@@ -33,17 +33,11 @@ namespace synctakerAPI.Controllers
             return BadRequest("Error creating project.");
         }
 
-        //[HttpGet(Name = "GetProject")]
-        //public User Get()
-        //{
-        //    return new User
-        //    {
-        //        Id = 1,
-        //        FirstName = "Kacper",
-        //        LastName = "Górski",
-        //        Email = "kac.per@kacper.de",
-        //        AdminRights = true
-        //    };
-        //}
+        [HttpGet]
+        public async Task<IActionResult> GetProjects()
+        {
+            var projects = await _projectService.GetAllProjectsAsync();
+            return Ok(projects);
+        }
     }
 }

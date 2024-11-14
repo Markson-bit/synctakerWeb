@@ -3,15 +3,23 @@
 @rendermode InteractiveServer
 @inject NavigationManager Navigation
 @inject UserService UserService
-@inject ProjectService ProjectService;
+@inject ProjectService ProjectService
 
 <div class="container-fluid">
     <div class="d-flex justify-content-end my-3">
         <button class="btn btn-primary" @onclick="ShowAddProjectModal">Add Project</button>
     </div>
 
-    <!-- page body -->
     <div>
+        <h4>Projects</h4>
+        <ul class="list-group">
+            @foreach (var project in projects)
+            {
+                <li class="list-group-item">
+                    <strong>@project.ProjectName</strong> - @project.ProjectDesc
+                </li>
+            }
+        </ul>
     </div>
 </div>
 
@@ -19,7 +27,6 @@
 {
     <div class="modal-overlay">
         <div class="modal-content">
-            <h5>Add project</h5>
             <form>
                 <div class="mb-3">
                     <label for="projectName" class="form-label">Project name</label>
@@ -32,7 +39,7 @@
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">Assign to Users</label>
+                    <label class="form-label">Assign workers</label>
                     <div>
                         @foreach (var user in users)
                         {
@@ -57,13 +64,14 @@
     private bool isAddProjectModalVisible = false;
     private string projectName;
     private string projectDescription;
-
     private List<User> selectedUsers = new List<User>();
     private List<User> users = new List<User>();
+    private List<Project> projects = new List<Project>();
 
     protected override async Task OnInitializedAsync()
     {
         users = await UserService.GetUsersAsync();
+        projects = await ProjectService.GetProjectsAsync();
     }
 
     private void ShowAddProjectModal()
@@ -94,7 +102,6 @@
         }
     }
 
-
     private async Task AddProject()
     {
         if (!string.IsNullOrEmpty(projectName))
@@ -111,8 +118,8 @@
             if (success)
             {
                 HideAddProjectModal();
+                projects = await ProjectService.GetProjectsAsync();
             }
-
         }
     }
 }
