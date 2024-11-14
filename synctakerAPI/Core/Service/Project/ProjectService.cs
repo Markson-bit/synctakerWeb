@@ -13,5 +13,10 @@
         {
             return await _projectRepository.AddProjectAsync(request);
         }
+
+        public async Task<List<Project>> GetAllProjectsAsync()
+        {
+            return await _projectRepository.GetAllProjectsAsync();
+        }
     }
 }
