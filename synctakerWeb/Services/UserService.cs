@@ -16,7 +16,16 @@ public class UserService
 
     public async Task<User> AuthenticateUserAsync(string username, string hashPassword)
     {
-        return await _httpClient.GetFromJsonAsync<User>("User");
+        var loginData = new { email = username, password = hashPassword };
+
+        var response = await _httpClient.PostAsJsonAsync("/User/authenticate", loginData);
+
+        if (response.IsSuccessStatusCode)
+        {
+            return await response.Content.ReadFromJsonAsync<User>();
+        }
+
+        return null;
     }
 
     public string HashPassword(string password)
@@ -31,6 +40,11 @@ public class UserService
             }
             return builder.ToString();
         }
+    }
+
+    public async Task<List<User>> GetUsersAsync()
+    {
+        return await _httpClient.GetFromJsonAsync<List<User>>("/User/users");
     }
 
     public User CurrentUser { get; set; } // Stores logged User

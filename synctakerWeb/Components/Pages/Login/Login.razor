@@ -1,5 +1,7 @@
 ﻿@page "/login"
 @using synctakerWeb.Models
+@using synctakerWeb.Components.Layout
+@layout EmptyLayout
 @rendermode InteractiveServer
 @inject NavigationManager Navigation
 @inject UserService UserService
@@ -61,7 +63,7 @@
         if(username != null && password != null)
         {
             string hashedPassword = UserService.HashPassword(password);
-            user = await UserService.AuthenticateUserAsync(username, password);
+            user = await UserService.AuthenticateUserAsync(username, hashedPassword);
         }
 
         if (user != null)

@@ -1,0 +1,125 @@
+﻿@page "/projects"
+@using synctakerWeb.Models
+@rendermode InteractiveServer
+@inject NavigationManager Navigation
+@inject UserService UserService
+@inject ProjectService ProjectService
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-end my-3">
+        <button class="btn btn-primary" @onclick="ShowAddProjectModal">Add Project</button>
+    </div>
+
+    <div>
+        <h4>Projects</h4>
+        <ul class="list-group">
+            @foreach (var project in projects)
+            {
+                <li class="list-group-item">
+                    <strong>@project.ProjectName</strong> - @project.ProjectDesc
+                </li>
+            }
+        </ul>
+    </div>
+</div>
+
+@if (isAddProjectModalVisible)
+{
+    <div class="modal-overlay">
+        <div class="modal-content">
+            <form>
+                <div class="mb-3">
+                    <label for="projectName" class="form-label">Project name</label>
+                    <input type="text" id="projectName" class="form-control" @bind="projectName" />
+                </div>
+
+                <div class="mb-3">
+                    <label for="projectDescription" class="form-label">Description</label>
+                    <textarea id="projectDescription" class="form-control" @bind="projectDescription"></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Assign workers</label>
+                    <div>
+                        @foreach (var user in users)
+                        {
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" @onchange="e => OnUserCheckboxChanged(e, user)" />
+                                <label class="form-check-label">@user.FirstName @user.LastName</label>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2">
+                    <button type="button" class="btn btn-secondary" @onclick="HideAddProjectModal">Cancel</button>
+                    <button type="button" class="btn btn-primary" @onclick="AddProject">Add Project</button>
+                </div>
+            </form>
+        </div>
+    </div>
+}
+
+@code {
+    private bool isAddProjectModalVisible = false;
+    private string projectName;
+    private string projectDescription;
+    private List<User> selectedUsers = new List<User>();
+    private List<User> users = new List<User>();
+    private List<Project> projects = new List<Project>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        users = await UserService.GetUsersAsync();
+        projects = await ProjectService.GetProjectsAsync();
+    }
+
+    private void ShowAddProjectModal()
+    {
+        isAddProjectModalVisible = true;
+        selectedUsers.Clear();
+    }
+
+    private void HideAddProjectModal()
+    {
+        isAddProjectModalVisible = false;
+    }
+
+    private void OnUserCheckboxChanged(ChangeEventArgs e, User user)
+    {
+        bool isChecked = (bool)e.Value;
+
+        if (isChecked)
+        {
+            if (!selectedUsers.Contains(user))
+            {
+                selectedUsers.Add(user);
+            }
+        }
+        else
+        {
+            selectedUsers.Remove(user);
+        }
+    }
+
+    private async Task AddProject()
+    {
+        if (!string.IsNullOrEmpty(projectName))
+        {
+            var request = new ProjectCreateRequest
+                {
+                    ProjectName = projectName,
+                    ProjectDescription = projectDescription,
+                    UserIds = selectedUsers.Select(u => u.Id).ToList()
+                };
+
+            bool success = await ProjectService.CreateProjectAsync(request);
+
+            if (success)
+            {
+                HideAddProjectModal();
+                projects = await ProjectService.GetProjectsAsync();
+            }
+        }
+    }
+}
