@@ -16,5 +16,10 @@ namespace synctakerAPI.Core
         {
             return _userRepository.GetUser(email);
         }
+
+        public List<User> GetUsers()
+        {
+            return _userRepository.GetUsers();
+        }
     }
 }

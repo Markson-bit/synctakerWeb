@@ -13,4 +13,10 @@ public class ProjectService
     {
         _httpClient = httpClientFactory.CreateClient("ApiClient");
     }
+
+    public async Task<bool> CreateProjectAsync(ProjectCreateRequest request)
+    {
+        var response = await _httpClient.PostAsJsonAsync("Project/create", request);
+        return response.IsSuccessStatusCode;
+    }
 }

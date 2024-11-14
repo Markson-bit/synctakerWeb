@@ -16,5 +16,10 @@ namespace synctakerAPI.Core
         {
             return _context.User.FirstOrDefault(u => u.Email == email);
         }
+
+        public List<User> GetUsers()
+        {
+            return _context.User.ToList();
+        }
     }
 }

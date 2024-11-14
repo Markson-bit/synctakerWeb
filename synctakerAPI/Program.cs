@@ -13,6 +13,9 @@ namespace synctakerAPI
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
 
+            builder.Services.AddScoped<IProjectService, ProjectService>();
+            builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
+
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
