@@ -18,5 +18,15 @@
         {
             return await _projectRepository.GetAllProjectsAsync();
         }
+
+        public async Task<bool> DeleteProjectAsync(int projectId)
+        {
+            return await _projectRepository.DeleteProjectAsync(projectId);
+        }
+
+        public async Task<bool> UpdateProjectAsync(int projectId, ProjectCreateRequest request)
+        {
+            return await _projectRepository.UpdateProjectAsync(projectId, request);
+        }
     }
 }

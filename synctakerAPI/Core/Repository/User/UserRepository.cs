@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using synctakerAPI.Core;
 
 namespace synctakerAPI.Core
