@@ -22,6 +22,19 @@ public class ProjectService
 
     public async Task<List<Project>> GetProjectsAsync()
     {
+        var projects = await _httpClient.GetFromJsonAsync<List<Project>>("Project");
         return await _httpClient.GetFromJsonAsync<List<Project>>("Project");
+    }
+
+    public async Task<bool> DeleteProjectAsync(int projectId)
+    {
+        var response = await _httpClient.DeleteAsync($"Project/{projectId}");
+        return response.IsSuccessStatusCode;
+    }
+
+    public async Task<bool> UpdateProjectAsync(int projectId, ProjectCreateRequest request)
+    {
+        var response = await _httpClient.PutAsJsonAsync($"Project/update/{projectId}", request);
+        return response.IsSuccessStatusCode;
     }
 }
