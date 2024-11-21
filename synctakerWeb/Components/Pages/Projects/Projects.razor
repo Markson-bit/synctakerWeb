@@ -15,8 +15,21 @@
         <ul class="list-group">
             @foreach (var project in projects)
             {
-                <li class="list-group-item">
-                    <strong>@project.ProjectName</strong> - @project.ProjectDesc
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>@project.ProjectName</strong> - @project.ProjectDesc
+                    </div>
+                    <div>
+                        <img src="data/details.png" alt="Details" class="action-icon cursor-pointer me-2"
+                             style="width: 30px; height: 30px;"
+                             @onclick="() => ShowProjectDetailsModal(project.Id)" />
+                        <img src="data/pencil.png" alt="Edit" class="action-icon cursor-pointer me-2"
+                             style="width: 30px; height: 30px;"
+                             @onclick="() => EditProject(project.Id)" />
+                        <img src="data/trash.png" alt="Delete" class="action-icon cursor-pointer"
+                             style="width: 30px; height: 30px;"
+                             @onclick="() => DeleteProject(project.Id)" />
+                    </div>
                 </li>
             }
         </ul>
@@ -25,17 +38,26 @@
 
 @if (isAddProjectModalVisible)
 {
+    <!-- Modal Add Project -->
     <div class="modal-overlay">
         <div class="modal-content">
             <form>
                 <div class="mb-3">
-                    <label for="projectName" class="form-label">Project name</label>
+                    <label for="projectName" class="form-label">Name</label>
                     <input type="text" id="projectName" class="form-control" @bind="projectName" />
+                    @if (string.IsNullOrEmpty(projectName) && showValidationErrors)
+                    {
+                        <div class="text-danger">Project name is required.</div>
+                    }
                 </div>
 
                 <div class="mb-3">
                     <label for="projectDescription" class="form-label">Description</label>
                     <textarea id="projectDescription" class="form-control" @bind="projectDescription"></textarea>
+                    @if (string.IsNullOrEmpty(projectDescription) && showValidationErrors)
+                    {
+                        <div class="text-danger">Description is required.</div>
+                    }
                 </div>
 
                 <div class="mb-3">
@@ -60,13 +82,98 @@
     </div>
 }
 
+@if (isViewDetailsModalVisible)
+{
+    <!-- Modal View Project Details -->
+    <div class="modal-overlay">
+        <div class="modal-content">
+            <h5>Project Details</h5>
+            <div class="mb-3">
+                <label class="form-label">Name</label>
+                <input type="text" class="form-control" value="@selectedProject.ProjectName" readonly />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Description</label>
+                <textarea class="form-control" readonly>@selectedProject.ProjectDesc</textarea>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Assigned Workers</label>
+                <ul>
+                    @foreach (var user in selectedProjectWorkers)
+                    {
+                        <li>@user.FirstName @user.LastName</li>
+                    }
+                </ul>
+            </div>
+
+            <div class="d-flex justify-content-end gap-2">
+                <button type="button" class="btn btn-secondary" @onclick="HideProjectDetailsModal">Close</button>
+            </div>
+        </div>
+    </div>
+}
+
+@if (isEditProjectModalVisible)
+{
+    <!-- Modal Edit Project -->
+    <div class="modal-overlay">
+        <div class="modal-content">
+            <h5>Edit Project</h5>
+            <form>
+                <div class="mb-3">
+                    <label for="editProjectName" class="form-label">Name</label>
+                    <input type="text" id="editProjectName" class="form-control" @bind="editProject.ProjectName" />
+                </div>
+
+                <div class="mb-3">
+                    <label for="editProjectDescription" class="form-label">Description</label>
+                    <textarea id="editProjectDescription" class="form-control" @bind="editProject.ProjectDesc"></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Assign Workers</label>
+                    <div>
+                        @foreach (var user in users)
+                        {
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input"
+                                       checked="@editProjectWorkers.Any(w => w.Id == user.Id)"
+                                       @onchange="e => OnEditUserCheckboxChanged(e, user)" />
+                                <label class="form-check-label">@user.FirstName @user.LastName</label>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2">
+                    <button type="button" class="btn btn-secondary" @onclick="HideEditProjectModal">Cancel</button>
+                    <button type="button" class="btn btn-primary" @onclick="SaveEditedProject">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+}
+
+
 @code {
     private bool isAddProjectModalVisible = false;
+    private bool isViewDetailsModalVisible = false;
+    private bool showValidationErrors = false;
     private string projectName;
     private string projectDescription;
+
+    private Project selectedProject;
+    private List<User> selectedProjectWorkers = new List<User>();
+
     private List<User> selectedUsers = new List<User>();
     private List<User> users = new List<User>();
     private List<Project> projects = new List<Project>();
+
+    private bool isEditProjectModalVisible = false;
+    private Project editProject = new Project();
+    private List<User> editProjectWorkers = new List<User>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -77,12 +184,60 @@
     private void ShowAddProjectModal()
     {
         isAddProjectModalVisible = true;
+        showValidationErrors = false;
         selectedUsers.Clear();
     }
 
     private void HideAddProjectModal()
     {
         isAddProjectModalVisible = false;
+    }
+
+    private void ShowProjectDetailsModal(int projectId)
+    {
+        selectedProject = projects.FirstOrDefault(p => p.Id == projectId);
+        selectedProjectWorkers = users.Where(u => selectedProject.ProjectUsers.Any(pu => pu.UserId == u.Id)).ToList();
+       isViewDetailsModalVisible = true;
+    }
+
+    private void HideProjectDetailsModal()
+    {
+        isViewDetailsModalVisible = false;
+    }
+
+    private async Task AddProject()
+    {
+        showValidationErrors = true;
+
+        if (string.IsNullOrEmpty(projectName) || string.IsNullOrEmpty(projectDescription))
+        {
+            return;
+        }
+
+        var request = new ProjectCreateRequest
+            {
+                ProjectName = projectName,
+                ProjectDescription = projectDescription,
+                UserIds = selectedUsers.Select(u => u.Id).ToList()
+            };
+
+        bool success = await ProjectService.CreateProjectAsync(request);
+
+        if (success)
+        {
+            HideAddProjectModal();
+            projects = await ProjectService.GetProjectsAsync();
+        }
+    }
+
+    private async Task DeleteProject(int projectId)
+    {
+        bool success = await ProjectService.DeleteProjectAsync(projectId);
+
+        if (success)
+        {
+            projects = await ProjectService.GetProjectsAsync();
+        }
     }
 
     private void OnUserCheckboxChanged(ChangeEventArgs e, User user)
@@ -102,24 +257,57 @@
         }
     }
 
-    private async Task AddProject()
+    private void ShowEditProjectModal(int projectId)
     {
-        if (!string.IsNullOrEmpty(projectName))
+        editProject = projects.FirstOrDefault(p => p.Id == projectId);
+        editProjectWorkers = users.Where(u => editProject.ProjectUsers.Any(pu => pu.UserId == u.Id)).ToList();
+        isEditProjectModalVisible = true;
+    }
+
+    private void HideEditProjectModal()
+    {
+        isEditProjectModalVisible = false;
+    }
+
+    private void OnEditUserCheckboxChanged(ChangeEventArgs e, User user)
+    {
+        bool isChecked = (bool)e.Value;
+
+        if (isChecked)
         {
-            var request = new ProjectCreateRequest
-                {
-                    ProjectName = projectName,
-                    ProjectDescription = projectDescription,
-                    UserIds = selectedUsers.Select(u => u.Id).ToList()
-                };
-
-            bool success = await ProjectService.CreateProjectAsync(request);
-
-            if (success)
+            if (!editProjectWorkers.Contains(user))
             {
-                HideAddProjectModal();
-                projects = await ProjectService.GetProjectsAsync();
+                editProjectWorkers.Add(user);
             }
         }
+        else
+        {
+            editProjectWorkers.Remove(user);
+        }
     }
+
+    private async Task SaveEditedProject()
+    {
+        var request = new ProjectCreateRequest
+            {
+                ProjectName = editProject.ProjectName,
+                ProjectDescription = editProject.ProjectDesc,
+                UserIds = editProjectWorkers.Select(u => u.Id).ToList()
+            };
+
+        bool success = await ProjectService.UpdateProjectAsync(editProject.Id, request);
+
+        if (success)
+        {
+            projects = await ProjectService.GetProjectsAsync();
+            HideEditProjectModal();
+        }
+    }
+
+    private void EditProject(int projectId)
+    {
+        ShowEditProjectModal(projectId);
+    }
+
+
 }

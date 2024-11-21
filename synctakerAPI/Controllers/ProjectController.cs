@@ -34,10 +34,36 @@ namespace synctakerAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetProjects()
+        public async Task<ActionResult<List<Project>>> GetProjects()
         {
             var projects = await _projectService.GetAllProjectsAsync();
             return Ok(projects);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteProject(int id)
+        {
+            var success = await _projectService.DeleteProjectAsync(id);
+
+            if (success)
+            {
+                return NoContent(); // Status 204
+            }
+
+            return NotFound(); // Status 404, if not exist
+        }
+
+        [HttpPut("update/{projectId}")]
+        public async Task<IActionResult> UpdateProject(int projectId, [FromBody] ProjectCreateRequest request)
+        {
+            var success = await _projectService.UpdateProjectAsync(projectId, request);
+
+            if (success)
+            {
+                return Ok();
+            }
+
+            return BadRequest("Failed to update project.");
         }
     }
 }
