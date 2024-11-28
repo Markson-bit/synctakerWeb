@@ -1,6 +1,6 @@
-﻿namespace synctakerWeb.Models
+﻿namespace synctakerAPI.Core
 {
-    public class Task
+    public class TaskModel
     {
         public int Id { get; set; }
         public int StatusId { get; set; }

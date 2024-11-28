@@ -2,9 +2,9 @@
 {
     public class TaskService : ITaskService
     {
-        private readonly ITaskService _taskRepository;
+        private readonly ITaskRepository _taskRepository;
 
-        public TaskService(ITaskService taskRepository)
+        public TaskService(ITaskRepository taskRepository)
         {
             _taskRepository = taskRepository;
         }

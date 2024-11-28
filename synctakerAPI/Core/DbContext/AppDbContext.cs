@@ -13,7 +13,7 @@ namespace synctakerAPI.Core
 
         public DbSet<Project> Project { get; set; }
         public DbSet<Project2User> Project2User { get; set; }
-        public DbSet<Task> Task { get; set; }
+        public DbSet<TaskModel> Task { get; set; }
         public DbSet<Status> Status { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
@@ -37,30 +37,30 @@ namespace synctakerAPI.Core
                 .WithMany(u => u.ProjectUsers)
                 .HasForeignKey(pu => pu.UserId);
 
-            modelBuilder.Entity<Task>()
+            modelBuilder.Entity<TaskModel>()
                 .HasOne(t => t.Project)
                 .WithMany(p => p.Tasks)
                 .HasForeignKey(t => t.ProjectId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<Task>()
+            modelBuilder.Entity<TaskModel>()
                 .HasOne(t => t.Status)
                 .WithMany()
                 .HasForeignKey(t => t.StatusId);
 
-            modelBuilder.Entity<Task>()
+            modelBuilder.Entity<TaskModel>()
                 .HasOne(t => t.AssignedTo)
                 .WithMany()
                 .HasForeignKey(t => t.AssignedToId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<Task>()
+            modelBuilder.Entity<TaskModel>()
                 .HasOne(t => t.Reviewer)
                 .WithMany()
                 .HasForeignKey(t => t.ReviewerId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<Task>()
+            modelBuilder.Entity<TaskModel>()
                 .HasOne(t => t.Tester)
                 .WithMany()
                 .HasForeignKey(t => t.TestId)
