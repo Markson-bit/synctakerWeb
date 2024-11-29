@@ -3,7 +3,9 @@ using synctakerAPI.Core;
 
 namespace synctakerAPI.Controllers
 {
-    public class TaskController
+    [ApiController]
+    [Route("[controller]")]
+    public class TaskController : ControllerBase
     {
         private readonly ILogger<TaskController> _logger;
         private readonly ITaskService _taskService;
@@ -12,6 +14,13 @@ namespace synctakerAPI.Controllers
         {
             _logger = logger;
             _taskService = taskService;
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<List<TaskModel>>> GetTasks()
+        {
+            var tasks = new List<TaskModel>();
+            return Ok(tasks);
         }
     }
 }

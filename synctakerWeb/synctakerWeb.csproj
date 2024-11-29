@@ -13,6 +13,8 @@
     <None Remove="Components\Pages\Home.razor.css" />
     <None Remove="Components\Pages\Login\Login.razor.css" />
     <None Remove="Components\Pages\Projects\Projects.razor.css" />
+    <None Remove="Components\Pages\Tasks\Projects.razor.css" />
+    <None Remove="Components\Pages\Tasks\Tasks.razor.css" />
   </ItemGroup>
 
   <ItemGroup>
@@ -20,6 +22,7 @@
     <Content Include="Components\Pages\Home.razor.css" />
     <Content Include="Components\Pages\Login\Login.razor.css" />
     <Content Include="Components\Pages\Projects\Projects.razor.css" />
+    <Content Include="Components\Pages\Tasks\Tasks.razor.css" />
   </ItemGroup>
 
 </Project>
