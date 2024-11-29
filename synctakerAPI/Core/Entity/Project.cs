@@ -9,6 +9,10 @@ namespace synctakerAPI.Core
 
         public string ProjectName { get; set; }
         public string ProjectDesc { get; set; }
+
+        //public ICollection<Task> Tasks { get; set; } = new List<Task>();
+        public ICollection<TaskModel> Tasks { get; set; } = new List<TaskModel>();
+
         public ICollection<Project2User> ProjectUsers { get; set; } = new List<Project2User>();
     }
 }

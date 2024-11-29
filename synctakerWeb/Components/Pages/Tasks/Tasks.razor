@@ -1,0 +1,39 @@
+﻿@page "/tasks"
+@using synctakerWeb.Models
+@rendermode InteractiveServer
+@inject NavigationManager Navigation
+@inject TaskService TaskService
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-end my-3">
+        <button class="btn btn-primary" @onclick="() => AddTask(1)">Add Task</button> <!-- 1 is a placeholder taskId -->
+    </div>
+
+    <div>
+        <h4>Tasks</h4>
+        <ul class="list-group">
+            @foreach (var task in tasks)
+            {
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>@task.Id</strong>
+                    </div>
+                </li>
+            }
+        </ul>
+    </div>
+</div>
+
+@code {
+    private List<TaskModel> tasks = new List<TaskModel>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        tasks = await TaskService.GetTasksAsync();
+    }
+
+    private void AddTask(int taskId)
+    {
+        Navigation.NavigateTo($"/tasks/addedit/{taskId}");
+    }
+}

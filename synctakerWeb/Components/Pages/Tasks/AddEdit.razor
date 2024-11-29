@@ -1,0 +1,83 @@
+﻿@page "/tasks/addedit/{taskId:int}"
+@using synctakerWeb.Models
+@rendermode InteractiveServer
+@inject NavigationManager Navigation
+
+<div class="container-fluid vh-100 p-4">
+    <div class="row h-100">
+        <div class="col-md-8 d-flex flex-column task-description">
+            <h5>Task Description</h5>
+            <textarea class="form-control flex-grow-1" placeholder="Enter task description..."></textarea>
+
+            <div class="mt-3">
+                <h6>Attachments</h6>
+                <div class="d-flex gap-2 align-items-center">
+                    <button class="btn btn-primary btn-sm">Add Attachment</button>
+                    <ul class="list-unstyled mb-0">
+                        <li>
+                            <a href="#">Attachment1.pdf</a>
+                            <button class="btn btn-sm btn-danger ms-2">Remove</button>
+                        </li>
+                        <li>
+                            <a href="#">Attachment2.png</a>
+                            <button class="btn btn-sm btn-danger ms-2">Remove</button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 task-details">
+            <h5>Task Details</h5>
+            <form>
+                <div class="mb-3">
+                    <label for="assignedTo" class="form-label">Assigned To</label>
+                    <select id="assignedTo" class="form-select">
+                        <option value="">-- Select User --</option>
+                        <option value="1">User 1</option>
+                        <option value="2">User 2</option>
+                        <option value="3">User 3</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="status" class="form-label">Status</label>
+                    <select id="status" class="form-select">
+                        <option value="">-- Select Status --</option>
+                        <option value="1">Assigned</option>
+                        <option value="2">In Progress</option>
+                        <option value="3">Testing</option>
+                        <option value="4">Completed</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="reviewer" class="form-label">Reviewer</label>
+                    <select id="reviewer" class="form-select">
+                        <option value="">-- Select Reviewer --</option>
+                        <option value="1">Reviewer 1</option>
+                        <option value="2">Reviewer 2</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="realizationDate" class="form-label">Planned Realization Date</label>
+                    <input type="date" id="realizationDate" class="form-control" />
+                </div>
+
+                <div class="mb-3">
+                    <label for="tester" class="form-label">Tester</label>
+                    <select id="tester" class="form-select">
+                        <option value="">-- Select Tester --</option>
+                        <option value="1">Tester 1</option>
+                        <option value="2">Tester 2</option>
+                    </select>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public int taskId { get; set; }
+}
