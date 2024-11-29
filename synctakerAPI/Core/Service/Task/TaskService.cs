@@ -8,5 +8,10 @@
         {
             _taskRepository = taskRepository;
         }
+
+        public async Task<List<TaskModel>> GetAllTasksAsync()
+        {
+            return await _taskRepository.GetAllTasksAsync();
+        }
     }
 }

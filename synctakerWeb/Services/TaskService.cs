@@ -16,7 +16,7 @@ public class TaskService
 
     public async Task<List<TaskModel>> GetTasksAsync()
     {
-        var projects = await _httpClient.GetFromJsonAsync<List<TaskModel>>("Task");
+        //var tasks = await _httpClient.GetFromJsonAsync<List<TaskModel>>("Task");
         return await _httpClient.GetFromJsonAsync<List<TaskModel>>("Task");
     }
 }

@@ -13,7 +13,7 @@ namespace synctakerAPI.Core
 
         public DbSet<Project> Project { get; set; }
         public DbSet<Project2User> Project2User { get; set; }
-        public DbSet<TaskModel> Task { get; set; }
+        public DbSet<TaskModel> TaskModel { get; set; }
         public DbSet<Status> Status { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)

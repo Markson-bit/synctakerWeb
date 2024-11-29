@@ -2,5 +2,6 @@
 {
     public interface ITaskRepository
     {
+        Task<List<TaskModel>> GetAllTasksAsync();
     }
 }

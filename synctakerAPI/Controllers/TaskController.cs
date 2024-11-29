@@ -19,7 +19,7 @@ namespace synctakerAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<List<TaskModel>>> GetTasks()
         {
-            var tasks = new List<TaskModel>();
+            var tasks = await _taskService.GetAllTasksAsync();
             return Ok(tasks);
         }
     }
