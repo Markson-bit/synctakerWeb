@@ -22,7 +22,7 @@ public class ProjectService
 
     public async Task<List<Project>> GetProjectsAsync()
     {
-        var projects = await _httpClient.GetFromJsonAsync<List<Project>>("Project");
+        //var projects = await _httpClient.GetFromJsonAsync<List<Project>>("Project");
         return await _httpClient.GetFromJsonAsync<List<Project>>("Project");
     }
 
