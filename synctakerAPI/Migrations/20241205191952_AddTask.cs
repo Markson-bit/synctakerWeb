@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace synctakerAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class Task : Migration
+    public partial class AddTask : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -85,14 +85,14 @@ namespace synctakerAPI.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    Priority = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     StatusId = table.Column<int>(type: "int", nullable: false),
                     ProjectId = table.Column<int>(type: "int", nullable: false),
                     AssignedToId = table.Column<int>(type: "int", nullable: true),
                     ReviewerId = table.Column<int>(type: "int", nullable: true),
                     TestId = table.Column<int>(type: "int", nullable: true),
                     RealizationPlanned = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ProjectId1 = table.Column<int>(type: "int", nullable: true)
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -103,11 +103,6 @@ namespace synctakerAPI.Migrations
                         principalTable: "Project",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_TaskModel_Project_ProjectId1",
-                        column: x => x.ProjectId1,
-                        principalTable: "Project",
-                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_TaskModel_Status_StatusId",
                         column: x => x.StatusId,
@@ -148,11 +143,6 @@ namespace synctakerAPI.Migrations
                 name: "IX_TaskModel_ProjectId",
                 table: "TaskModel",
                 column: "ProjectId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TaskModel_ProjectId1",
-                table: "TaskModel",
-                column: "ProjectId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TaskModel_ReviewerId",

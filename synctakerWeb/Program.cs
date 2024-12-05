@@ -14,7 +14,7 @@ namespace synctakerWeb
             {
                 options.AddPolicy("BlazorCorsPolicy", policy =>
                 {
-                    policy.WithOrigins("https://localhost:7299") // Zast¹p [TWOJE_IP] i [PORT] odpowiednimi wartoœciami dla Blazor Server
+                    policy.WithOrigins("https://localhost:7299")
                           .AllowAnyMethod()
                           .AllowAnyHeader();
                 });
@@ -27,6 +27,7 @@ namespace synctakerWeb
             builder.Services.AddScoped<UserService>();
             builder.Services.AddScoped<ProjectService>();
             builder.Services.AddScoped<TaskService>();
+            builder.Services.AddScoped<StatusService>();
 
             builder.Services.AddHttpClient("ApiClient", client =>
             {

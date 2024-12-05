@@ -90,10 +90,11 @@ namespace synctakerAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ProjectId")
-                        .HasColumnType("int");
+                    b.Property<string>("Priority")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ProjectId1")
+                    b.Property<int>("ProjectId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("RealizationPlanned")
@@ -113,8 +114,6 @@ namespace synctakerAPI.Migrations
                     b.HasIndex("AssignedToId");
 
                     b.HasIndex("ProjectId");
-
-                    b.HasIndex("ProjectId1");
 
                     b.HasIndex("ReviewerId");
 
@@ -184,14 +183,10 @@ namespace synctakerAPI.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("synctakerAPI.Core.Project", "Project")
-                        .WithMany()
+                        .WithMany("Tasks")
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.HasOne("synctakerAPI.Core.Project", null)
-                        .WithMany("Tasks")
-                        .HasForeignKey("ProjectId1");
 
                     b.HasOne("synctakerAPI.Core.User", "Reviewer")
                         .WithMany()

@@ -4,25 +4,30 @@
 @inject NavigationManager Navigation
 @inject ProjectService ProjectService
 @inject UserService UserService
+@inject StatusService StatusService
+@inject TaskService TaskService
 
 <div class="container-fluid vh-100 p-4">
     <div class="row h-100">
         <div class="col-md-9 d-flex flex-column task-description">
             <h5>Description</h5>
-            <textarea class="form-control flex-grow-1" placeholder="Enter task description..."></textarea>
+            <textarea class="form-control flex-grow-1"
+                      placeholder="Enter task description..."
+                      disabled="@isFieldsDisabled"
+                      @bind="taskDescription"></textarea>
 
             <div class="mt-3">
                 <h6>Attachments</h6>
                 <div class="d-flex gap-2 align-items-center">
-                    <button class="btn btn-primary btn-sm">Add Attachment</button>
+                    <button class="btn btn-primary btn-sm" disabled="@isFieldsDisabled">Add Attachment</button>
                     <ul class="list-unstyled mb-0">
                         <li>
                             <a href="#">Attachment1.pdf</a>
-                            <button class="btn btn-sm btn-danger ms-2">Remove</button>
+                            <button class="btn btn-sm btn-danger ms-2" disabled="@isFieldsDisabled">Remove</button>
                         </li>
                         <li>
                             <a href="#">Attachment2.png</a>
-                            <button class="btn btn-sm btn-danger ms-2">Remove</button>
+                            <button class="btn btn-sm btn-danger ms-2" disabled="@isFieldsDisabled">Remove</button>
                         </li>
                     </ul>
                 </div>
@@ -33,9 +38,20 @@
             <h5>Details</h5>
             <form>
                 <div class="mb-3">
+                    <label for="project" class="form-label">Project</label>
+                    <select id="project" class="form-select" @onchange="OnProjectChanged">
+                        <option value="" selected disabled>-- Select Project --</option>
+                        @foreach (var project in availableProjects)
+                        {
+                            <option value="@project.Id">@project.ProjectName</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="mb-3">
                     <label for="priority" class="form-label">Priority</label>
-                    <select id="assignedTo" class="form-select">
-                        <option value="">-- Select User --</option>
+                    <select id="priority" class="form-select" disabled="@isFieldsDisabled" @bind="selectedPriority">
+                        <option value="">-- Select Priority --</option>
                         <option value="1"> [L] - Low</option>
                         <option value="2"> [N] - Normal</option>
                         <option value="3"> [H] - High</option>
@@ -44,65 +60,157 @@
 
                 <div class="mb-3">
                     <label for="assignedTo" class="form-label">Assigned To</label>
-                    <select id="assignedTo" class="form-select">
+                    <select id="assignedTo" class="form-select" disabled="@isFieldsDisabled" @bind="selectedAssignedToId">
                         <option value="">-- Select User --</option>
-                        <option value="1">User 1</option>
-                        <option value="2">User 2</option>
-                        <option value="3">User 3</option>
+                        @foreach (var worker in accessedWorkers)
+                        {
+                            <option value="@worker.Id">@worker.FirstName @worker.LastName</option>
+                        }
                     </select>
                 </div>
 
                 <div class="mb-3">
                     <label for="status" class="form-label">Status</label>
-                    <select id="status" class="form-select">
+                    <select id="status" class="form-select" disabled="@isFieldsDisabled" @bind="selectedStatusId">
                         <option value="">-- Select Status --</option>
-                        <option value="1">Assigned</option>
-                        <option value="2">In Progress</option>
-                        <option value="3">Testing</option>
-                        <option value="4">Completed</option>
+                        @foreach (var status in statuses)
+                        {
+                            <option value="@status.Id">@status.Name</option>
+                        }
                     </select>
                 </div>
 
                 <div class="mb-3">
                     <label for="reviewer" class="form-label">Reviewer</label>
-                    <select id="reviewer" class="form-select">
+                    <select id="reviewer" class="form-select" disabled="@isFieldsDisabled" @bind="selectedReviewerId">
                         <option value="">-- Select Reviewer --</option>
-                        <option value="1">Reviewer 1</option>
-                        <option value="2">Reviewer 2</option>
+                        @foreach (var worker in accessedWorkers)
+                        {
+                            <option value="@worker.Id">@worker.FirstName @worker.LastName</option>
+                        }
                     </select>
                 </div>
 
                 <div class="mb-3">
                     <label for="tester" class="form-label">Tester</label>
-                    <select id="tester" class="form-select">
+                    <select id="tester" class="form-select" disabled="@isFieldsDisabled" @bind="selectedTesterId">
                         <option value="">-- Select Tester --</option>
-                        <option value="1">Tester 1</option>
-                        <option value="2">Tester 2</option>
+                        @foreach (var worker in accessedWorkers)
+                        {
+                            <option value="@worker.Id">@worker.FirstName @worker.LastName</option>
+                        }
                     </select>
                 </div>
 
                 <div class="mb-3">
                     <label for="realizationDate" class="form-label">Planned Realization Date</label>
-                    <input type="date" id="realizationDate" class="form-control" />
+                    <input type="date" id="realizationDate" class="form-control" disabled="@isFieldsDisabled" @bind="realizationDate"/>
                 </div>
             </form>
         </div>
+        <div class="row">
+            <div class="col text-end">
+                <button class="btn btn-success" @onclick="SaveTaskAsync" disabled="@isSaveDisabled">Save All</button>
+            </div>
+        </div>
+
     </div>
 </div>
 
 @code {
     [Parameter] public int taskId { get; set; }
 
-    List<User> accessedWorkers = new List<User>();
+    private bool isFieldsDisabled = true;
+    private bool isSaveDisabled = true;
+    private List<User> accessedWorkers = new List<User>();
+    private List<Project> availableProjects = new List<Project>();
+    private List<Status> statuses = new List<Status>();
+
+    private TaskModel task = new TaskModel();
+
+
+    // FIELDS
+    private string selectedPriority = string.Empty;
+    private int? selectedStatusId;
+    private int selectedProjectId;
+    private int? selectedAssignedToId;
+    private int? selectedReviewerId;
+    private int? selectedTesterId;
+    private DateTime? realizationDate;
+    private string taskDescription = string.Empty;
+
 
     protected override async Task OnInitializedAsync()
     {
-        // NAJPIERW WYMUSIĆ WYBÓR PROJEKTU RESZTA NA SZARO -> PO WYBORZE AKTUALIZACJA I SPRAWDZENIE OSÓB
-        int projectId = 1;
+        availableProjects = await ProjectService.GetProjectsAsync();
 
-        var users = await UserService.GetUsersAsync();
-        accessedWorkers = users.Where(user =>
-            user.ProjectUsers.Any(pu => pu.ProjectId == projectId)).ToList();
+        if (taskId != 0)
+        {
+            task = await TaskService.GetTaskByIdAsync(taskId);
+
+            // FIELDS LOAD
+            selectedPriority = task.Priority;
+            selectedStatusId = task.StatusId;
+            selectedProjectId = task.ProjectId;
+            selectedAssignedToId = task.AssignedToId;
+            selectedReviewerId = task.ReviewerId;
+            selectedTesterId = task.TestId;
+            realizationDate = task.RealizationPlanned;
+            taskDescription = task.Description;
+
+            isFieldsDisabled = false;
+            isSaveDisabled = false;
+            selectedProjectId = task.ProjectId;
+        }
+
+        if (selectedProjectId != 0)
+            GetActualData();
     }
 
+    private async Task OnProjectChanged(ChangeEventArgs e)
+    {
+        if (int.TryParse(e.Value.ToString(), out int projectId))
+        {
+            selectedProjectId = projectId;
+            GetActualData();
+
+            isFieldsDisabled = false;
+            isSaveDisabled = false;
+        }
+    }
+
+    private async Task SaveTaskAsync()
+    {
+        if (selectedStatusId != null)
+        {
+            var savedTaskId = await TaskService.SaveTaskAsync(new TaskSaveRequest
+                {
+                    TaskId = taskId,
+                    Priority = selectedPriority,
+                    StatusId = selectedStatusId.Value,
+                    ProjectId = selectedProjectId,
+                    AssignedToId = selectedAssignedToId,
+                    ReviewerId = selectedReviewerId,
+                    TesterId = selectedTesterId,
+                    RealizationPlanned = realizationDate,
+                    Description = taskDescription
+                });
+
+            Navigation.NavigateTo($"/tasks/addedit/{savedTaskId}");
+        }
+        else
+        {
+
+        }
+    }
+    private async void GetActualData()
+    {
+        var users = await UserService.GetUsersAsync();
+        accessedWorkers = users.Where(user =>
+            user.ProjectUsers.Any(pu => pu.ProjectId == selectedProjectId)).ToList();
+
+        statuses = await StatusService.GetStatusesAsync();
+
+    }
 }
+

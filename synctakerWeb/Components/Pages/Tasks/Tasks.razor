@@ -6,7 +6,7 @@
 
 <div class="container-fluid">
     <div class="d-flex justify-content-end my-3">
-        <button class="btn btn-primary" @onclick="() => AddTask(1)">Add Task</button> <!-- 1 is a placeholder taskId -->
+        <button class="btn btn-primary" @onclick="() => AddEditTask(0)">Add Task</button> <!-- 1 is a placeholder taskId -->
     </div>
 
     <div>
@@ -32,7 +32,7 @@
         tasks = await TaskService.GetTasksAsync();
     }
 
-    private void AddTask(int taskId)
+    private void AddEditTask(int taskId)
     {
         Navigation.NavigateTo($"/tasks/addedit/{taskId}");
     }
