@@ -16,7 +16,26 @@ public class TaskService
 
     public async Task<List<TaskModel>> GetTasksAsync()
     {
-        //var tasks = await _httpClient.GetFromJsonAsync<List<TaskModel>>("Task");
         return await _httpClient.GetFromJsonAsync<List<TaskModel>>("Task");
+    }
+
+    public async Task<TaskModel> GetTaskByIdAsync(int taskId)
+    {
+        return await _httpClient.GetFromJsonAsync<TaskModel>($"Task/{taskId}");
+    }
+
+    public async Task<int> SaveTaskAsync(TaskSaveRequest request)
+    {
+        var response = await _httpClient.PostAsJsonAsync("Task/save", request);
+        response.EnsureSuccessStatusCode();
+
+        var responseBody = await response.Content.ReadFromJsonAsync<SaveTaskResponse>();
+
+        return responseBody?.TaskId ?? 0;
+    }
+
+    public class SaveTaskResponse
+    {
+        public int TaskId { get; set; }
     }
 }

@@ -80,11 +80,12 @@ namespace synctakerAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Task",
+                name: "TaskModel",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    Priority = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     StatusId = table.Column<int>(type: "int", nullable: false),
                     ProjectId = table.Column<int>(type: "int", nullable: false),
                     AssignedToId = table.Column<int>(type: "int", nullable: true),
@@ -95,33 +96,33 @@ namespace synctakerAPI.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Task", x => x.Id);
+                    table.PrimaryKey("PK_TaskModel", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Task_Project_ProjectId",
+                        name: "FK_TaskModel_Project_ProjectId",
                         column: x => x.ProjectId,
                         principalTable: "Project",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Task_Status_StatusId",
+                        name: "FK_TaskModel_Status_StatusId",
                         column: x => x.StatusId,
                         principalTable: "Status",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Task_User_AssignedToId",
+                        name: "FK_TaskModel_User_AssignedToId",
                         column: x => x.AssignedToId,
                         principalTable: "User",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Task_User_ReviewerId",
+                        name: "FK_TaskModel_User_ReviewerId",
                         column: x => x.ReviewerId,
                         principalTable: "User",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Task_User_TestId",
+                        name: "FK_TaskModel_User_TestId",
                         column: x => x.TestId,
                         principalTable: "User",
                         principalColumn: "Id",
@@ -134,28 +135,28 @@ namespace synctakerAPI.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Task_AssignedToId",
-                table: "Task",
+                name: "IX_TaskModel_AssignedToId",
+                table: "TaskModel",
                 column: "AssignedToId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Task_ProjectId",
-                table: "Task",
+                name: "IX_TaskModel_ProjectId",
+                table: "TaskModel",
                 column: "ProjectId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Task_ReviewerId",
-                table: "Task",
+                name: "IX_TaskModel_ReviewerId",
+                table: "TaskModel",
                 column: "ReviewerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Task_StatusId",
-                table: "Task",
+                name: "IX_TaskModel_StatusId",
+                table: "TaskModel",
                 column: "StatusId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Task_TestId",
-                table: "Task",
+                name: "IX_TaskModel_TestId",
+                table: "TaskModel",
                 column: "TestId");
         }
 
@@ -166,7 +167,7 @@ namespace synctakerAPI.Migrations
                 name: "Project2User");
 
             migrationBuilder.DropTable(
-                name: "Task");
+                name: "TaskModel");
 
             migrationBuilder.DropTable(
                 name: "Project");

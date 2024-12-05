@@ -12,7 +12,7 @@ using synctakerAPI.Core;
 namespace synctakerAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241128154844_AddTask")]
+    [Migration("20241205191952_AddTask")]
     partial class AddTask
     {
         /// <inheritdoc />
@@ -78,7 +78,7 @@ namespace synctakerAPI.Migrations
                     b.ToTable("Status");
                 });
 
-            modelBuilder.Entity("synctakerAPI.Core.Task", b =>
+            modelBuilder.Entity("synctakerAPI.Core.TaskModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -90,6 +90,10 @@ namespace synctakerAPI.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Priority")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -120,7 +124,7 @@ namespace synctakerAPI.Migrations
 
                     b.HasIndex("TestId");
 
-                    b.ToTable("Task");
+                    b.ToTable("TaskModel");
                 });
 
             modelBuilder.Entity("synctakerAPI.Core.User", b =>
@@ -174,7 +178,7 @@ namespace synctakerAPI.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("synctakerAPI.Core.Task", b =>
+            modelBuilder.Entity("synctakerAPI.Core.TaskModel", b =>
                 {
                     b.HasOne("synctakerAPI.Core.User", "AssignedTo")
                         .WithMany()

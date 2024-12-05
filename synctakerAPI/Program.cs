@@ -19,6 +19,9 @@ namespace synctakerAPI
             builder.Services.AddScoped<ITaskService, TaskService>();
             builder.Services.AddScoped<ITaskRepository, TaskRepository>();
 
+            builder.Services.AddScoped<IStatusService, StatusService>();
+            builder.Services.AddScoped<IStatusRepository, StatusRepository>();
+
             builder.Services.AddControllers()
                 .AddJsonOptions(options =>
                 {

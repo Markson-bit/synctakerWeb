@@ -20,7 +20,7 @@ namespace synctakerAPI.Core
 
         public List<User> GetUsers()
         {
-            return _context.User.ToList();
+            return _context.User.Include(p => p.ProjectUsers).ThenInclude(p => p.Project).ToList();
         }
     }
 }
