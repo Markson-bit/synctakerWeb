@@ -75,7 +75,7 @@ namespace synctakerAPI.Migrations
                     b.ToTable("Status");
                 });
 
-            modelBuilder.Entity("synctakerAPI.Core.Task", b =>
+            modelBuilder.Entity("synctakerAPI.Core.TaskModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -91,6 +91,9 @@ namespace synctakerAPI.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ProjectId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ProjectId1")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("RealizationPlanned")
@@ -111,13 +114,15 @@ namespace synctakerAPI.Migrations
 
                     b.HasIndex("ProjectId");
 
+                    b.HasIndex("ProjectId1");
+
                     b.HasIndex("ReviewerId");
 
                     b.HasIndex("StatusId");
 
                     b.HasIndex("TestId");
 
-                    b.ToTable("Task");
+                    b.ToTable("TaskModel");
                 });
 
             modelBuilder.Entity("synctakerAPI.Core.User", b =>
@@ -171,7 +176,7 @@ namespace synctakerAPI.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("synctakerAPI.Core.Task", b =>
+            modelBuilder.Entity("synctakerAPI.Core.TaskModel", b =>
                 {
                     b.HasOne("synctakerAPI.Core.User", "AssignedTo")
                         .WithMany()
@@ -179,10 +184,14 @@ namespace synctakerAPI.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("synctakerAPI.Core.Project", "Project")
-                        .WithMany("Tasks")
+                        .WithMany()
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.HasOne("synctakerAPI.Core.Project", null)
+                        .WithMany("Tasks")
+                        .HasForeignKey("ProjectId1");
 
                     b.HasOne("synctakerAPI.Core.User", "Reviewer")
                         .WithMany()

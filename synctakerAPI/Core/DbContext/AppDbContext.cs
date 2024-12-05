@@ -39,7 +39,7 @@ namespace synctakerAPI.Core
 
             modelBuilder.Entity<TaskModel>()
                 .HasOne(t => t.Project)
-                .WithMany(p => p.Tasks)
+                .WithMany()
                 .HasForeignKey(t => t.ProjectId)
                 .OnDelete(DeleteBehavior.Restrict);
 

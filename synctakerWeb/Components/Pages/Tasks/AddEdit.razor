@@ -2,11 +2,13 @@
 @using synctakerWeb.Models
 @rendermode InteractiveServer
 @inject NavigationManager Navigation
+@inject ProjectService ProjectService
+@inject UserService UserService
 
 <div class="container-fluid vh-100 p-4">
     <div class="row h-100">
-        <div class="col-md-8 d-flex flex-column task-description">
-            <h5>Task Description</h5>
+        <div class="col-md-9 d-flex flex-column task-description">
+            <h5>Description</h5>
             <textarea class="form-control flex-grow-1" placeholder="Enter task description..."></textarea>
 
             <div class="mt-3">
@@ -27,9 +29,19 @@
             </div>
         </div>
 
-        <div class="col-md-4 task-details">
-            <h5>Task Details</h5>
+        <div class="col-md-3 task-details">
+            <h5>Details</h5>
             <form>
+                <div class="mb-3">
+                    <label for="priority" class="form-label">Priority</label>
+                    <select id="assignedTo" class="form-select">
+                        <option value="">-- Select User --</option>
+                        <option value="1"> [L] - Low</option>
+                        <option value="2"> [N] - Normal</option>
+                        <option value="3"> [H] - High</option>
+                    </select>
+                </div>
+
                 <div class="mb-3">
                     <label for="assignedTo" class="form-label">Assigned To</label>
                     <select id="assignedTo" class="form-select">
@@ -61,17 +73,17 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="realizationDate" class="form-label">Planned Realization Date</label>
-                    <input type="date" id="realizationDate" class="form-control" />
-                </div>
-
-                <div class="mb-3">
                     <label for="tester" class="form-label">Tester</label>
                     <select id="tester" class="form-select">
                         <option value="">-- Select Tester --</option>
                         <option value="1">Tester 1</option>
                         <option value="2">Tester 2</option>
                     </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="realizationDate" class="form-label">Planned Realization Date</label>
+                    <input type="date" id="realizationDate" class="form-control" />
                 </div>
             </form>
         </div>
@@ -80,4 +92,13 @@
 
 @code {
     [Parameter] public int taskId { get; set; }
+
+    List<User> accessedWorkers = new List<User>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var users = await UserService.GetUsersAsync();
+        //accessedWorkers = users.Where(x => x.ProjectUsers)
+    }
+
 }
