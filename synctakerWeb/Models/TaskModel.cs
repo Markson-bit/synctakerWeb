@@ -4,6 +4,7 @@
     {
         public int Id { get; set; }
         public int StatusId { get; set; }
+        public string Priority { get; set; }
         public int ProjectId { get; set; }
         public Project Project { get; set; }
         public int? AssignedToId { get; set; }
