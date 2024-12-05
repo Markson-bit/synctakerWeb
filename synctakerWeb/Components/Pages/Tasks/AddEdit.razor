@@ -97,8 +97,12 @@
 
     protected override async Task OnInitializedAsync()
     {
+        // NAJPIERW WYMUSIĆ WYBÓR PROJEKTU RESZTA NA SZARO -> PO WYBORZE AKTUALIZACJA I SPRAWDZENIE OSÓB
+        int projectId = 1;
+
         var users = await UserService.GetUsersAsync();
-        //accessedWorkers = users.Where(x => x.ProjectUsers)
+        accessedWorkers = users.Where(user =>
+            user.ProjectUsers.Any(pu => pu.ProjectId == projectId)).ToList();
     }
 
 }
