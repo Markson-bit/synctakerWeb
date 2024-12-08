@@ -104,22 +104,24 @@
 
                 <div class="mb-3">
                     <label for="realizationDate" class="form-label">Planned Realization Date</label>
-                    <input type="date" id="realizationDate" class="form-control" disabled="@isFieldsDisabled" @bind="realizationDate"/>
-                </div>
-
-                <div class="col text-end">
-                    <button class="btn btn-success" @onclick="SaveTaskAsync" disabled="@isSaveDisabled">Save All</button>
+                    <input type="date" id="realizationDate" class="form-control" disabled="@isFieldsDisabled" @bind="realizationDate" />
                 </div>
             </form>
         </div>
-    </div>
-    <div class="toast-notification @toastClass">
-        <div class="toast-header">
-            Notification
+        <div class="row">
+            <div class="col text-end">
+                <button class="btn btn-success" @onclick="SaveTaskAsync" disabled="@isSaveDisabled">Save All</button>
+            </div>
         </div>
-        <div>
-            @notificationMessage
-        </div>
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <div class="error-message-overlay">
+                <div class="error-message">
+                    <h5 class="error-message-header">Notification</h5>
+                    <p>@errorMessage</p>
+                </div>
+            </div>
+        }
     </div>
 </div>
 
@@ -134,6 +136,8 @@
 
     private TaskModel task = new TaskModel();
 
+    private string errorMessage = string.Empty;
+
     // FIELDS
     private string selectedPriority = string.Empty;
     private int? selectedStatusId;
@@ -143,6 +147,7 @@
     private int? selectedTesterId;
     private DateTime? realizationDate;
     private string taskDescription = string.Empty;
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -168,7 +173,7 @@
         }
 
         if (selectedProjectId != 0)
-            GetActualData();
+            await GetActualData();
     }
 
     private async Task OnProjectChanged(ChangeEventArgs e)
@@ -180,58 +185,52 @@
 
             isFieldsDisabled = false;
             isSaveDisabled = false;
-
-            StateHasChanged();
         }
     }
-
-    private string notificationMessage = string.Empty;
-    private string toastClass = string.Empty;
 
     private async Task SaveTaskAsync()
     {
+        if (selectedStatusId == null)
+        {
+            ShowErrorMessage("Please select a status before saving.");
+            return;
+        }
         if (selectedStatusId != null)
         {
-            try
-            {
-                var savedTaskId = await TaskService.SaveTaskAsync(new TaskSaveRequest
-                    {
-                        TaskId = taskId,
-                        Priority = selectedPriority,
-                        StatusId = selectedStatusId.Value,
-                        ProjectId = selectedProjectId,
-                        AssignedToId = selectedAssignedToId,
-                        ReviewerId = selectedReviewerId,
-                        TesterId = selectedTesterId,
-                        RealizationPlanned = realizationDate,
-                        Description = taskDescription
-                    });
+            var savedTaskId = await TaskService.SaveTaskAsync(new TaskSaveRequest
+                {
+                    TaskId = taskId,
+                    Priority = selectedPriority,
+                    StatusId = selectedStatusId.Value,
+                    ProjectId = selectedProjectId,
+                    AssignedToId = selectedAssignedToId,
+                    ReviewerId = selectedReviewerId,
+                    TesterId = selectedTesterId,
+                    RealizationPlanned = realizationDate,
+                    Description = taskDescription
+                });
 
-                Navigation.NavigateTo($"/tasks/addedit/{savedTaskId}");
-                ShowToast("Task saved successfully!", "toast-success");
-            }
-            catch (Exception ex)
-            {
-                ShowToast("An error occurred while saving the task.", "toast-error");
-            }
+            Navigation.NavigateTo($"/tasks/addedit/{savedTaskId}");
         }
         else
         {
-            ShowToast("Please select a status before saving the task.", "toast-warning");
+
         }
     }
 
-    private void ShowToast(string message, string additionalClass)
+    private void ShowErrorMessage(string message)
     {
-        notificationMessage = message;
-        toastClass = $"show {additionalClass}";
+        errorMessage = message;
 
-        _ = Task.Delay(3000).ContinueWith(_ =>
+        var timer = new System.Timers.Timer(3000);
+        timer.Elapsed += (sender, e) =>
         {
-            notificationMessage = string.Empty;
-            toastClass = string.Empty;
+            errorMessage = string.Empty;
             InvokeAsync(StateHasChanged);
-        });
+            timer.Stop();
+            timer.Dispose();
+        };
+        timer.Start();
     }
 
     private async Task GetActualData()
@@ -241,9 +240,6 @@
             user.ProjectUsers.Any(pu => pu.ProjectId == selectedProjectId)).ToList();
 
         statuses = await StatusService.GetStatusesAsync();
-
-        StateHasChanged();
     }
-
 }
 
