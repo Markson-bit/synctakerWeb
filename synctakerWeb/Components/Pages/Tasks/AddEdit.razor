@@ -128,7 +128,6 @@
 
     private TaskModel task = new TaskModel();
 
-
     // FIELDS
     private string selectedPriority = string.Empty;
     private int? selectedStatusId;
@@ -138,7 +137,6 @@
     private int? selectedTesterId;
     private DateTime? realizationDate;
     private string taskDescription = string.Empty;
-
 
     protected override async Task OnInitializedAsync()
     {
@@ -172,10 +170,12 @@
         if (int.TryParse(e.Value.ToString(), out int projectId))
         {
             selectedProjectId = projectId;
-            GetActualData();
+            await GetActualData();
 
             isFieldsDisabled = false;
             isSaveDisabled = false;
+
+            StateHasChanged();
         }
     }
 
@@ -203,7 +203,8 @@
 
         }
     }
-    private async void GetActualData()
+
+    private async Task GetActualData()
     {
         var users = await UserService.GetUsersAsync();
         accessedWorkers = users.Where(user =>
@@ -211,6 +212,8 @@
 
         statuses = await StatusService.GetStatusesAsync();
 
+        StateHasChanged();
     }
+
 }
 
