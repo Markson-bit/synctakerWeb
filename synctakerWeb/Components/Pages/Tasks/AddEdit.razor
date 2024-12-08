@@ -39,13 +39,15 @@
             <form>
                 <div class="mb-3">
                     <label for="project" class="form-label">Project</label>
-                    <select id="project" class="form-select" @onchange="OnProjectChanged">
-                        <option value="" selected disabled>-- Select Project --</option>
+                    <select id="project" class="form-select" @bind="selectedProjectId" @bind:event="onchange">
+                        <option value="0" selected>-- Select Project --</option>
                         @foreach (var project in availableProjects)
                         {
                             <option value="@project.Id">@project.ProjectName</option>
                         }
                     </select>
+
+
                 </div>
 
                 <div class="mb-3">
@@ -141,7 +143,24 @@
     // FIELDS
     private string selectedPriority = string.Empty;
     private int? selectedStatusId;
-    private int selectedProjectId;
+
+    private int _selectedProjectId;
+    private int selectedProjectId
+    {
+        get => _selectedProjectId;
+        set
+        {
+            if (_selectedProjectId != value)
+            {
+                _selectedProjectId = value;
+                if (_selectedProjectId != 0)
+                {
+                    OnProjectChangedAsync().ConfigureAwait(false);
+                }
+            }
+        }
+    }
+
     private int? selectedAssignedToId;
     private int? selectedReviewerId;
     private int? selectedTesterId;
@@ -176,25 +195,34 @@
             await GetActualData();
     }
 
-    private async Task OnProjectChanged(ChangeEventArgs e)
+    private async Task OnProjectChangedAsync()
     {
-        if (int.TryParse(e.Value.ToString(), out int projectId))
+        if (selectedProjectId != 0)
         {
-            selectedProjectId = projectId;
             await GetActualData();
 
             isFieldsDisabled = false;
             isSaveDisabled = false;
+
+            StateHasChanged();
         }
     }
 
+
     private async Task SaveTaskAsync()
     {
+        if (selectedProjectId == 0)
+        {
+            ShowErrorMessage("Please select a project before saving.");
+            return;
+        }
+
         if (selectedStatusId == null)
         {
             ShowErrorMessage("Please select a status before saving.");
             return;
         }
+
         if (selectedStatusId != null)
         {
             var savedTaskId = await TaskService.SaveTaskAsync(new TaskSaveRequest
