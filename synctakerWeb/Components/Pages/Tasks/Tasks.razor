@@ -10,13 +10,18 @@
     </div>
 
     <div>
-        @* <h4>Tasks</h4> *@
         <ul class="list-group">
             @foreach (var task in tasks)
             {
-                <li class="list-group-item d-flex justify-content-between align-items-center">
+                <li class="list-group-item" @onclick="() => AddEditTask(task.Id)" style="cursor: pointer;">
                     <div>
-                        <strong>@task.Id</strong>
+                        <h5 class="mb-1">
+                            <strong>@GetPriorityMarkup(task.Priority)</strong> - ID: @task.Id - @task.TaskName
+                        </h5>
+                        <p class="mb-0 text-muted">
+                            Project: @task.Project.ProjectName | Assigned To: @(task.AssignedTo?.FirstName ?? "No assigned") | Priority: @task.Priority | Status: @task.Status.Name
+                        </p>
+                        <small class="text-muted">Planned Date: @task.RealizationPlanned?.ToString("yyyy-MM-dd")</small>
                     </div>
                 </li>
             }
@@ -26,6 +31,28 @@
 
 @code {
     private List<TaskModel> tasks = new List<TaskModel>();
+
+    private MarkupString GetPriorityMarkup(string priority)
+    {
+        string label = "[?]";
+        string color = "gray";
+
+        if (!string.IsNullOrWhiteSpace(priority) && priority.Contains("["))
+        {
+            var startIndex = priority.IndexOf("[");
+            var endIndex = priority.IndexOf("]");
+            if (startIndex >= 0 && endIndex > startIndex)
+            {
+                label = priority.Substring(startIndex, endIndex - startIndex + 1);
+
+                if (label == "[L]") color = "gray";
+                else if (label == "[N]") color = "green";
+                else if (label == "[H]") color = "red";
+            }
+        }
+
+        return new MarkupString($"<span style='color: {color};'>{label}</span>");
+    }
 
     protected override async Task OnInitializedAsync()
     {
