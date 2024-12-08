@@ -106,14 +106,20 @@
                     <label for="realizationDate" class="form-label">Planned Realization Date</label>
                     <input type="date" id="realizationDate" class="form-control" disabled="@isFieldsDisabled" @bind="realizationDate"/>
                 </div>
+
+                <div class="col text-end">
+                    <button class="btn btn-success" @onclick="SaveTaskAsync" disabled="@isSaveDisabled">Save All</button>
+                </div>
             </form>
         </div>
-        <div class="row">
-            <div class="col text-end">
-                <button class="btn btn-success" @onclick="SaveTaskAsync" disabled="@isSaveDisabled">Save All</button>
-            </div>
+    </div>
+    <div class="toast-notification @toastClass">
+        <div class="toast-header">
+            Notification
         </div>
-
+        <div>
+            @notificationMessage
+        </div>
     </div>
 </div>
 
@@ -179,29 +185,53 @@
         }
     }
 
+    private string notificationMessage = string.Empty;
+    private string toastClass = string.Empty;
+
     private async Task SaveTaskAsync()
     {
         if (selectedStatusId != null)
         {
-            var savedTaskId = await TaskService.SaveTaskAsync(new TaskSaveRequest
-                {
-                    TaskId = taskId,
-                    Priority = selectedPriority,
-                    StatusId = selectedStatusId.Value,
-                    ProjectId = selectedProjectId,
-                    AssignedToId = selectedAssignedToId,
-                    ReviewerId = selectedReviewerId,
-                    TesterId = selectedTesterId,
-                    RealizationPlanned = realizationDate,
-                    Description = taskDescription
-                });
+            try
+            {
+                var savedTaskId = await TaskService.SaveTaskAsync(new TaskSaveRequest
+                    {
+                        TaskId = taskId,
+                        Priority = selectedPriority,
+                        StatusId = selectedStatusId.Value,
+                        ProjectId = selectedProjectId,
+                        AssignedToId = selectedAssignedToId,
+                        ReviewerId = selectedReviewerId,
+                        TesterId = selectedTesterId,
+                        RealizationPlanned = realizationDate,
+                        Description = taskDescription
+                    });
 
-            Navigation.NavigateTo($"/tasks/addedit/{savedTaskId}");
+                Navigation.NavigateTo($"/tasks/addedit/{savedTaskId}");
+                ShowToast("Task saved successfully!", "toast-success");
+            }
+            catch (Exception ex)
+            {
+                ShowToast("An error occurred while saving the task.", "toast-error");
+            }
         }
         else
         {
-
+            ShowToast("Please select a status before saving the task.", "toast-warning");
         }
+    }
+
+    private void ShowToast(string message, string additionalClass)
+    {
+        notificationMessage = message;
+        toastClass = $"show {additionalClass}";
+
+        _ = Task.Delay(3000).ContinueWith(_ =>
+        {
+            notificationMessage = string.Empty;
+            toastClass = string.Empty;
+            InvokeAsync(StateHasChanged);
+        });
     }
 
     private async Task GetActualData()
