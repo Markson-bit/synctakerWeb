@@ -40,7 +40,7 @@ namespace synctakerAPI.Core
         {
             TaskModel task;
 
-            if (request.TaskId == 0 || request.TaskId == null)
+            if (request.TaskId == 0/*|| request.TaskId == null*/)
             {
                 task = new TaskModel
                 {
@@ -51,6 +51,7 @@ namespace synctakerAPI.Core
                     ReviewerId = request.ReviewerId,
                     TestId = request.TesterId,
                     RealizationPlanned = request.RealizationPlanned,
+                    TaskName = request.TaskName,
                     Description = request.Description,
                 };
 

@@ -12,7 +12,7 @@ using synctakerAPI.Core;
 namespace synctakerAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241205191952_AddTask")]
+    [Migration("20241208231804_AddTask")]
     partial class AddTask
     {
         /// <inheritdoc />
@@ -108,6 +108,10 @@ namespace synctakerAPI.Migrations
 
                     b.Property<int>("StatusId")
                         .HasColumnType("int");
+
+                    b.Property<string>("TaskName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("TestId")
                         .HasColumnType("int");

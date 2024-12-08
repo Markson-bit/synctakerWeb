@@ -10,11 +10,16 @@
 <div class="container-fluid vh-100 p-4">
     <div class="row h-100">
         <div class="col-md-9 d-flex flex-column task-description">
+            <div class="mb-3">
+                <label for="taskName" class="form-label">Task Name</label>
+                <input type="text" id="taskName" class="form-control" placeholder="Enter task name..." disabled="@isFieldsDisabled" @bind="taskName"/>
+            </div>
             <h5>Description</h5>
             <textarea class="form-control flex-grow-1"
                       placeholder="Enter task description..."
                       disabled="@isFieldsDisabled"
                       @bind="taskDescription"></textarea>
+
 
             <div class="mt-3">
                 <h6>Attachments</h6>
@@ -46,8 +51,6 @@
                             <option value="@project.Id">@project.ProjectName</option>
                         }
                     </select>
-
-
                 </div>
 
                 <div class="mb-3">
@@ -109,8 +112,6 @@
                     <input type="date" id="realizationDate" class="form-control" disabled="@isFieldsDisabled" @bind="realizationDate" />
                 </div>
             </form>
-        </div>
-        <div class="row">
             <div class="col text-end">
                 <button class="btn btn-success" @onclick="SaveTaskAsync" disabled="@isSaveDisabled">Save All</button>
             </div>
@@ -165,8 +166,16 @@
     private int? selectedReviewerId;
     private int? selectedTesterId;
     private DateTime? realizationDate;
+
+    private string taskName = string.Empty;
     private string taskDescription = string.Empty;
 
+    private readonly Dictionary<string, string> PriorityMap = new()
+    {
+        { "1", "[L] - Low" },
+        { "2", "[N] - Normal" },
+        { "3", "[H] - High" }
+    };
 
     protected override async Task OnInitializedAsync()
     {
@@ -177,13 +186,15 @@
             task = await TaskService.GetTaskByIdAsync(taskId);
 
             // FIELDS LOAD
-            selectedPriority = task.Priority;
+            selectedPriority = PriorityMap.FirstOrDefault(x => x.Value == task.Priority).Key ?? string.Empty;
             selectedStatusId = task.StatusId;
             selectedProjectId = task.ProjectId;
             selectedAssignedToId = task.AssignedToId;
             selectedReviewerId = task.ReviewerId;
             selectedTesterId = task.TestId;
             realizationDate = task.RealizationPlanned;
+
+            taskName = task.TaskName;
             taskDescription = task.Description;
 
             isFieldsDisabled = false;
@@ -211,39 +222,45 @@
 
     private async Task SaveTaskAsync()
     {
+        if (string.IsNullOrWhiteSpace(taskName))
+        {
+            ShowErrorMessage("Please enter a task name before saving.");
+            return;
+        }
         if (selectedProjectId == 0)
         {
             ShowErrorMessage("Please select a project before saving.");
             return;
         }
-
         if (selectedStatusId == null)
         {
             ShowErrorMessage("Please select a status before saving.");
             return;
         }
 
-        if (selectedStatusId != null)
-        {
-            var savedTaskId = await TaskService.SaveTaskAsync(new TaskSaveRequest
-                {
-                    TaskId = taskId,
-                    Priority = selectedPriority,
-                    StatusId = selectedStatusId.Value,
-                    ProjectId = selectedProjectId,
-                    AssignedToId = selectedAssignedToId,
-                    ReviewerId = selectedReviewerId,
-                    TesterId = selectedTesterId,
-                    RealizationPlanned = realizationDate,
-                    Description = taskDescription
-                });
+        var priorityText = PriorityMap.ContainsKey(selectedPriority) ? PriorityMap[selectedPriority] : string.Empty;
 
-            Navigation.NavigateTo($"/tasks/addedit/{savedTaskId}");
-        }
-        else
+        if (string.IsNullOrEmpty(priorityText))
         {
-
+            ShowErrorMessage("Please select a priority before saving");
+            return;
         }
+
+        var savedTaskId = await TaskService.SaveTaskAsync(new TaskSaveRequest
+        {
+            TaskId = taskId,
+            Priority = priorityText, 
+            StatusId = selectedStatusId.Value,
+            ProjectId = selectedProjectId,
+            AssignedToId = selectedAssignedToId,
+            ReviewerId = selectedReviewerId,
+            TesterId = selectedTesterId,
+            RealizationPlanned = realizationDate,
+            TaskName = taskName,
+            Description = taskDescription
+        });
+
+        Navigation.NavigateTo($"/tasks/addedit/{savedTaskId}");
     }
 
     private void ShowErrorMessage(string message)

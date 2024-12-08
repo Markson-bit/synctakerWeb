@@ -92,6 +92,7 @@ namespace synctakerAPI.Migrations
                     ReviewerId = table.Column<int>(type: "int", nullable: true),
                     TestId = table.Column<int>(type: "int", nullable: true),
                     RealizationPlanned = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    TaskName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
