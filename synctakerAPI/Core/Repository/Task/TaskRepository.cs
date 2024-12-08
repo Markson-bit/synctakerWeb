@@ -73,6 +73,7 @@ namespace synctakerAPI.Core
                 task.ReviewerId = request.ReviewerId;
                 task.TestId = request.TesterId;
                 task.RealizationPlanned = request.RealizationPlanned;
+                task.TaskName = request.TaskName;
                 task.Description = request.Description;
 
                 _context.TaskModel.Update(task);
@@ -80,7 +81,6 @@ namespace synctakerAPI.Core
 
             await _context.SaveChangesAsync();
 
-            // Zwracamy ID zadania
             return task.Id;
         }
     }
