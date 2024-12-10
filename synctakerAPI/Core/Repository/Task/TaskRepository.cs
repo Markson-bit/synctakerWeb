@@ -1,6 +1,7 @@
 ﻿using Azure.Core;
 using Microsoft.EntityFrameworkCore;
 using synctakerApi.Core;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace synctakerAPI.Core
@@ -23,6 +24,36 @@ namespace synctakerAPI.Core
                 .Include(t => t.Tester)
                 .Include(t => t.Status)
                 .ToListAsync();
+        }
+
+        public async Task<List<TaskModel>> GetTasksByStatus(int userId, TaskService.TaskSpecifiedStatus status)
+        {
+            if (status == TaskService.TaskSpecifiedStatus.Assigned)
+            {
+                return await _context.TaskModel
+                    .Include(t => t.Status)
+                    .Where(u => (u.AssignedToId == userId || u.ReviewerId == userId || u.TestId == userId) && u.Status.Name == "Assigned").ToListAsync();
+            }
+            if (status == TaskService.TaskSpecifiedStatus.Realization)
+            {
+                return await _context.TaskModel
+                    .Include(t => t.Status)
+                    .Where(u => (u.AssignedToId == userId || u.ReviewerId == userId || u.TestId == userId) && u.Status.Name == "In realization").ToListAsync();
+            }
+            if (status == TaskService.TaskSpecifiedStatus.Review)
+            {
+                return await _context.TaskModel
+                    .Include(t => t.Status)
+                    .Where(u => (u.AssignedToId == userId || u.ReviewerId == userId || u.TestId == userId) && u.Status.Name == "Review").ToListAsync();
+            }
+            if (status == TaskService.TaskSpecifiedStatus.Testing)
+            {
+                return await _context.TaskModel
+                    .Include(t => t.Status)
+                    .Where(u => (u.AssignedToId == userId || u.ReviewerId == userId || u.TestId == userId) && u.Status.Name == "Testing").ToListAsync();
+            }
+
+            throw new ArgumentException($"Invalid status: {status}");
         }
 
         public async Task<TaskModel> GetTaskByIdAsync(int taskId)

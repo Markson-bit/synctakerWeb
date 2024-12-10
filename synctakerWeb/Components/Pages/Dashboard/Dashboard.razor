@@ -1,45 +1,111 @@
 ﻿@page "/dashboard"
 @using synctakerWeb.Models
+@using synctakerWeb.Classes
 @using synctakerWeb.Components.Layout
 @rendermode InteractiveServer
 @inject NavigationManager Navigation
 @layout MainLayout
+@inject TaskService TaskService
+@inject UserService UserService
 
 <div class="flex-grow-1 p-2">
     <div class="content-area bg-custom-light rounded-3 p-3" style="height: 700px;">
         <div class="row h-100 g-3">
-            <div class="col-lg-4 col-md-6 col-sm-12 d-flex flex-column p-3" style="border: 1px solid #d6d6d6; border-radius: 8px; background-color: #f9f9f9;">
+            <div class="col-lg-3 col-md-6 col-sm-12 d-flex flex-column p-3" style="border: 1px solid #d6d6d6; border-radius: 8px; background-color: #f9f9f9;">
                 <h5 class="text-center">Assigned</h5>
                 <div class="flex-grow-1 overflow-auto">
                     <ul class="list-group">
-                        <li class="list-group-item">Task 1</li>
-                        <li class="list-group-item">Task 2</li>
-                        <li class="list-group-item">Task 3</li>
+                        @foreach (var taskAssigned in tasksAssigned)
+                        {
+                            <li class="list-group-item" @onclick="() => AddEditTask(taskAssigned.Id)" style="cursor: pointer;">
+                                <div>
+                                    <h6 class="mb-1">
+                                        <strong>@MarkupStatic.GetPriorityMarkup(taskAssigned.Priority)</strong> - ID: @taskAssigned.Id - @taskAssigned.TaskName
+                                    </h6>
+                                </div>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>
 
-            <div class="col-lg-4 col-md-6 col-sm-12 d-flex flex-column p-3" style="border: 1px solid #d6d6d6; border-radius: 8px; background-color: #f9f9f9;">
+            <div class="col-lg-3 col-md-12 col-sm-12 d-flex flex-column p-3" style="border: 1px solid #d6d6d6; border-radius: 8px; background-color: #f9f9f9;">
+                <h5 class="text-center">In realization</h5>
+                <div class="flex-grow-1 overflow-auto">
+                    <ul class="list-group">
+                        @foreach (var taskRealization in tasksRealization)
+                        {
+                            <li class="list-group-item" @onclick="() => AddEditTask(taskRealization.Id)" style="cursor: pointer;">
+                                <div>
+                                    <h6 class="mb-1">
+                                        <strong>@MarkupStatic.GetPriorityMarkup(taskRealization.Priority)</strong> - ID: @taskRealization.Id - @taskRealization.TaskName
+                                    </h6>
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6 col-sm-12 d-flex flex-column p-3" style="border: 1px solid #d6d6d6; border-radius: 8px; background-color: #f9f9f9;">
                 <h5 class="text-center">Review</h5>
                 <div class="flex-grow-1 overflow-auto">
                     <ul class="list-group">
-                        <li class="list-group-item">Task A</li>
-                        <li class="list-group-item">Task B</li>
-                        <li class="list-group-item">Task C</li>
+                        @foreach (var taskReviewed in tasksReview)
+                        {
+                            <li class="list-group-item" @onclick="() => AddEditTask(taskReviewed.Id)" style="cursor: pointer;">
+                                <div>
+                                    <h6 class="mb-1">
+                                        <strong>@MarkupStatic.GetPriorityMarkup(taskReviewed.Priority)</strong> - ID: @taskReviewed.Id - @taskReviewed.TaskName
+                                    </h6>
+                                </div>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>
 
-            <div class="col-lg-4 col-md-12 col-sm-12 d-flex flex-column p-3" style="border: 1px solid #d6d6d6; border-radius: 8px; background-color: #f9f9f9;">
-                <h5 class="text-center">Ended</h5>
+            <div class="col-lg-3 col-md-12 col-sm-12 d-flex flex-column p-3" style="border: 1px solid #d6d6d6; border-radius: 8px; background-color: #f9f9f9;">
+                <h5 class="text-center">Testing</h5>
                 <div class="flex-grow-1 overflow-auto">
                     <ul class="list-group">
-                        <li class="list-group-item">Task X</li>
-                        <li class="list-group-item">Task Y</li>
-                        <li class="list-group-item">Task Z</li>
+                        @foreach (var taskTesting in tasksTesting)
+                        {
+                            <li class="list-group-item" @onclick="() => AddEditTask(taskTesting.Id)" style="cursor: pointer;">
+                                <div>
+                                    <h6 class="mb-1">
+                                        <strong>@MarkupStatic.GetPriorityMarkup(taskTesting.Priority)</strong> - ID: @taskTesting.Id - @taskTesting.TaskName
+                                    </h6>
+                                </div>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+@code
+{
+    private List<TaskModel> tasksAssigned = new List<TaskModel>();
+    private List<TaskModel> tasksRealization = new List<TaskModel>();
+    private List<TaskModel> tasksReview = new List<TaskModel>();
+    private List<TaskModel> tasksTesting = new List<TaskModel>();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        var activeUser = UserService.CurrentUser;
+
+        tasksAssigned = await TaskService.GetSpecifiedTasksAsync(TaskService.TaskSpecifiedStatus.Assigned, activeUser.Id);
+        tasksRealization = await TaskService.GetSpecifiedTasksAsync(TaskService.TaskSpecifiedStatus.Realization, activeUser.Id);
+        tasksReview = await TaskService.GetSpecifiedTasksAsync(TaskService.TaskSpecifiedStatus.Review, activeUser.Id);
+        tasksTesting = await TaskService.GetSpecifiedTasksAsync(TaskService.TaskSpecifiedStatus.Testing, activeUser.Id);
+    }
+
+    private void AddEditTask(int taskId)
+    {
+        Navigation.NavigateTo($"/tasks/addedit/{taskId}");
+    }
+}
