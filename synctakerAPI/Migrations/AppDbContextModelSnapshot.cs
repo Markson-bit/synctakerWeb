@@ -106,6 +106,10 @@ namespace synctakerAPI.Migrations
                     b.Property<int>("StatusId")
                         .HasColumnType("int");
 
+                    b.Property<string>("TaskName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int?>("TestId")
                         .HasColumnType("int");
 

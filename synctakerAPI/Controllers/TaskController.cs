@@ -24,7 +24,14 @@ namespace synctakerAPI.Controllers
             return Ok(tasks);
         }
 
-        [HttpGet("{taskId}")]
+        [HttpGet("status/{userId}")]
+        public async Task<ActionResult<List<TaskModel>>> GetSpecifiedTasks(int userId, [FromQuery] TaskService.TaskSpecifiedStatus status)
+        {
+            var tasks = await _taskService.GetTasksByStatus(userId, status);
+            return Ok(tasks);
+        }
+
+        [HttpGet("task/{taskId}")]
         public async Task<IActionResult> GetTaskById(int taskId)
         {
             var task = await _taskService.GetTaskByIdAsync(taskId);

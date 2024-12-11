@@ -1,4 +1,8 @@
-﻿.background-image {
+﻿* {
+    font-family: sans-serif;
+}
+
+.background-image {
     position: absolute;
     top: 0;
     left: 0;

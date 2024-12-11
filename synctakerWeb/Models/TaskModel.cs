@@ -11,6 +11,7 @@
         public int? ReviewerId { get; set; }
         public int? TestId { get; set; }
         public DateTime? RealizationPlanned { get; set; }
+        public string TaskName { get; set; }
         public string Description { get; set; }
 
         // Relations

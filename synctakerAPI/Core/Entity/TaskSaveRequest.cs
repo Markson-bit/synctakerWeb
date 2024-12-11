@@ -10,6 +10,7 @@
         public int? ReviewerId { get; set; }
         public int? TesterId { get; set; }
         public DateTime? RealizationPlanned { get; set; }
+        public string TaskName { get; set; }
         public string Description { get; set; }
     }
 }

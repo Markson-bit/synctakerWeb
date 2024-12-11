@@ -24,7 +24,9 @@ namespace synctakerWeb
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
 
-            builder.Services.AddScoped<UserService>();
+            //builder.Services.AddScoped<UserService>();
+            builder.Services.AddSingleton<UserService>();
+
             builder.Services.AddScoped<ProjectService>();
             builder.Services.AddScoped<TaskService>();
             builder.Services.AddScoped<StatusService>();
