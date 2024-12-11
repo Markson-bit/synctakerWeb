@@ -112,8 +112,8 @@
                     <input type="date" id="realizationDate" class="form-control" disabled="@isFieldsDisabled" @bind="realizationDate" />
                 </div>
             </form>
-            <div class="col text-end">
-                <button class="btn btn-success" @onclick="SaveTaskAsync" disabled="@isSaveDisabled">Save All</button>
+            <div class="save-button-container">
+                <button class="btn btn-lg btn-success" @onclick="SaveTaskAsync" disabled="@isSaveDisabled">Save All</button>
             </div>
         </div>
         @if (!string.IsNullOrEmpty(errorMessage))

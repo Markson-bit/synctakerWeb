@@ -45,3 +45,12 @@ input[type="text"] {
 .text-custom {
     color: #4a4a4a;
 }
+
+.list-group-item {
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+    .list-group-item:hover {
+        background-color: #e0e0e0;
+        cursor: pointer;
+    }
