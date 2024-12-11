@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace synctakerAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class AddTask : Migration
+    public partial class Task : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
