@@ -7,7 +7,10 @@
 
 <div class="container-fluid">
     <div class="d-flex justify-content-end my-3">
-        <button class="btn btn-primary" @onclick="ShowAddProjectModal">Add Project</button>
+        @if (activeUser?.AdminRights == true)
+        {
+            <button class="btn btn-primary" @onclick="ShowAddProjectModal">Add Project</button>
+        }
     </div>
 
     <div>
@@ -23,12 +26,15 @@
                         <img src="data/details.png" alt="Details" class="action-icon cursor-pointer me-2"
                              style="width: 30px; height: 30px;"
                              @onclick="() => ShowProjectDetailsModal(project.Id)" />
-                        <img src="data/pencil.png" alt="Edit" class="action-icon cursor-pointer me-2"
-                             style="width: 30px; height: 30px;"
-                             @onclick="() => EditProject(project.Id)" />
-                        <img src="data/trash.png" alt="Delete" class="action-icon cursor-pointer"
-                             style="width: 30px; height: 30px;"
-                             @onclick="() => DeleteProject(project.Id)" />
+                        @if (activeUser?.AdminRights == true)
+                        {
+                            <img src="data/pencil.png" alt="Edit" class="action-icon cursor-pointer me-2"
+                                 style="width: 30px; height: 30px;"
+                                 @onclick="() => EditProject(project.Id)" />
+                            <img src="data/trash.png" alt="Delete" class="action-icon cursor-pointer"
+                                 style="width: 30px; height: 30px;"
+                                 @onclick="() => DeleteProject(project.Id)" />
+                        }
                     </div>
                 </li>
             }
@@ -171,6 +177,8 @@
     private List<User> users = new List<User>();
     private List<Project> projects = new List<Project>();
 
+    private User activeUser;
+
     private bool isEditProjectModalVisible = false;
     private Project editProject = new Project();
     private List<User> editProjectWorkers = new List<User>();
@@ -179,6 +187,7 @@
     {
         users = await UserService.GetUsersAsync();
         projects = await ProjectService.GetProjectsAsync();
+        activeUser = UserService.CurrentUser;
     }
 
     private void ShowAddProjectModal()

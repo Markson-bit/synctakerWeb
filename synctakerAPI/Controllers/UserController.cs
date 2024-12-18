@@ -17,6 +17,36 @@ namespace synctakerAPI.Controllers
             _userService = userService;
         }
 
+        [HttpPost("create")]
+        public async Task<IActionResult> CreateUser([FromBody] UserCreateRequest request)
+        {
+            if (request == null)
+            {
+                return BadRequest("Invalid user data.");
+            }
+
+            var userId = await _userService.CreateUserAsync(request);
+            if (userId != null)
+            {
+                return Ok(new { UserId = userId });
+            }
+
+            return BadRequest("Error creating user.");
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUser(int id)
+        {
+            var success = await _userService.DeleteUserAsync(id);
+
+            if (success)
+            {
+                return NoContent(); // Status 204
+            }
+
+            return NotFound(); // Status 404, if not exist
+        }
+
         [HttpPost("authenticate")]
         public IActionResult Authenticate([FromBody] LoginRequest request)
         {
