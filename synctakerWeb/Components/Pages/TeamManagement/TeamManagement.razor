@@ -1,0 +1,215 @@
+﻿@page "/team"
+@using synctakerWeb.Models
+@rendermode InteractiveServer
+@inject NavigationManager Navigation
+@inject UserService UserService
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-end my-3">
+        @if (activeUser?.AdminRights == true)
+        {
+            <button class="btn btn-primary" @onclick="ShowAddUserModal">Add User</button>
+        }
+    </div>
+
+    <div>
+        <ul class="list-group">
+            @foreach (var user in users)
+            {
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>@user.FirstName @user.LastName</strong> - @user.Email
+                    </div>
+                    <div>
+                        <img src="data/details.png" alt="Details" class="action-icon cursor-pointer me-2"
+                             style="width: 30px; height: 30px;"
+                             @onclick="() => ShowUserDetailsModal(user.Id)" />
+
+                        @if (activeUser?.AdminRights == true)
+                        {
+                            <img src="data/trash.png" alt="Delete" class="action-icon cursor-pointer"
+                                 style="width: 30px; height: 30px;"
+                                 @onclick="() => DeleteUser(user.Id)" />
+                        }
+                    </div>
+                </li>
+            }
+        </ul>
+    </div>
+</div>
+
+@if (isAddUserModalVisible)
+{
+    <!-- Modal Add User -->
+    <div class="modal-overlay">
+        <div class="modal-content">
+            <h5>Add User</h5>
+            <form>
+                <div class="mb-3">
+                    <label for="firstName" class="form-label">First Name</label>
+                    <input type="text" id="firstName" class="form-control" @bind="firstName" />
+                    @if (string.IsNullOrEmpty(firstName) && showValidationErrors)
+                    {
+                        <div class="text-danger">First name is required.</div>
+                    }
+                </div>
+
+                <div class="mb-3">
+                    <label for="lastName" class="form-label">Last Name</label>
+                    <input type="text" id="lastName" class="form-control" @bind="lastName" />
+                    @if (string.IsNullOrEmpty(lastName) && showValidationErrors)
+                    {
+                        <div class="text-danger">Last name is required.</div>
+                    }
+                </div>
+
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" id="email" class="form-control" @bind="email" />
+                    @if (string.IsNullOrEmpty(email) && showValidationErrors)
+                    {
+                        <div class="text-danger">Email is required.</div>
+                    }
+                </div>
+
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" id="password" class="form-control" @bind="password" />
+                    @if (string.IsNullOrEmpty(password) && showValidationErrors)
+                    {
+                        <div class="text-danger">Password is required.</div>
+                    }
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Admin Rights</label>
+                    <div>
+                        <input type="checkbox" class="form-check-input" @bind="adminRights" />
+                        <label class="form-check-label">Is Admin</label>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2">
+                    <button type="button" class="btn btn-secondary" @onclick="HideAddUserModal">Cancel</button>
+                    <button type="button" class="btn btn-primary" @onclick="AddUser">Add User</button>
+                </div>
+            </form>
+        </div>
+    </div>
+}
+
+@if (isViewDetailsModalVisible)
+{
+    <!-- Modal View User Details -->
+    <div class="modal-overlay">
+        <div class="modal-content">
+            <h5>User Details</h5>
+            <div class="mb-3">
+                <label class="form-label">Name</label>
+                <input type="text" class="form-control" value="@selectedUser.FirstName @selectedUser.LastName" readonly />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input type="text" class="form-control" value="@selectedUser.Email" readonly />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Admin Rights</label>
+                <input type="checkbox" class="form-check-input" checked="@selectedUser.AdminRights" disabled />
+            </div>
+
+            <div class="d-flex justify-content-end gap-2">
+                <button type="button" class="btn btn-secondary" @onclick="HideUserDetailsModal">Close</button>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private bool isAddUserModalVisible = false;
+    private bool isViewDetailsModalVisible = false;
+    private bool showValidationErrors = false;
+    private string firstName;
+    private string lastName;
+    private string email;
+    private string password;
+    private bool adminRights;
+    private User activeUser;
+
+    private User selectedUser;
+    private List<User> users = new List<User>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        users = await UserService.GetUsersAsync();
+        activeUser = UserService.CurrentUser;
+    }
+
+    private void ShowAddUserModal()
+    {
+        isAddUserModalVisible = true;
+        showValidationErrors = false;
+        firstName = string.Empty;
+        lastName = string.Empty;
+        email = string.Empty;
+        password = string.Empty;
+        adminRights = false;
+    }
+
+    private void HideAddUserModal()
+    {
+        isAddUserModalVisible = false;
+    }
+
+    private void ShowUserDetailsModal(int userId)
+    {
+        selectedUser = users.FirstOrDefault(u => u.Id == userId);
+        isViewDetailsModalVisible = true;
+    }
+
+    private void HideUserDetailsModal()
+    {
+        isViewDetailsModalVisible = false;
+    }
+
+    private async Task AddUser()
+    {
+        showValidationErrors = true;
+
+        if (string.IsNullOrEmpty(firstName) || string.IsNullOrEmpty(lastName) || string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
+        {
+            return;
+        }
+
+        string hashedPassword = "";
+        hashedPassword = UserService.HashPassword(password);
+
+        var newUser = new UserCreateRequest
+            {
+                FirstName = firstName,
+                LastName = lastName,
+                Email = email,
+                Password = hashedPassword,
+                AdminRights = adminRights
+            };
+
+        bool success = await UserService.CreateUserAsync(newUser);
+
+        if (success)
+        {
+            HideAddUserModal();
+            users = await UserService.GetUsersAsync();
+        }
+    }
+
+    private async Task DeleteUser(int userId)
+    {
+        bool success = await UserService.DeleteUserAsync(userId);
+
+        if (success)
+        {
+            users = await UserService.GetUsersAsync();
+        }
+    }
+}

@@ -15,6 +15,7 @@
     <None Remove="Components\Pages\Projects\Projects.razor.css" />
     <None Remove="Components\Pages\Tasks\Projects.razor.css" />
     <None Remove="Components\Pages\Tasks\Tasks.razor.css" />
+    <None Remove="Components\Pages\TeamManagement\TeamManagement.razor.css" />
   </ItemGroup>
 
   <ItemGroup>
@@ -23,6 +24,7 @@
     <Content Include="Components\Pages\Login\Login.razor.css" />
     <Content Include="Components\Pages\Projects\Projects.razor.css" />
     <Content Include="Components\Pages\Tasks\Tasks.razor.css" />
+    <Content Include="Components\Pages\TeamManagement\TeamManagement.razor.css" />
   </ItemGroup>
 
 </Project>

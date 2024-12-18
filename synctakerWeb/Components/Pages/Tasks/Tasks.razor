@@ -4,15 +4,45 @@
 @rendermode InteractiveServer
 @inject NavigationManager Navigation
 @inject TaskService TaskService
+@inject UserService UserService
 
 <div class="container-fluid">
     <div class="d-flex justify-content-end my-3">
-        <button class="btn btn-primary" @onclick="() => AddEditTask(0)">Add Task</button> <!-- 1 is a placeholder taskId -->
+        @if (activeUser?.AdminRights == true)
+        {
+            <button class="btn btn-primary" @onclick="() => AddEditTask(0)">Add Task</button>
+        }
     </div>
 
-    <div>
+    <!-- Zadania Aktywne -->
+    <div class="p-3 border mb-3">
+        <h5 class="mb-4 text-center">Active</h5>
         <ul class="list-group">
-            @foreach (var task in tasks)
+            @foreach (var task in activeTasks)
+            {
+                <li class="list-group-item" @onclick="() => AddEditTask(task.Id)" style="cursor: pointer;">
+                    <div>
+                        <h5 class="mb-1">
+                            <strong>@MarkupStatic.GetPriorityMarkup(task.Priority)</strong> - ID: @task.Id - @task.TaskName
+                        </h5>
+                        <p class="mb-0 text-muted">
+                            Project: @task.Project.ProjectName | Assigned To: @(task.AssignedTo?.FirstName ?? "No assigned") | Priority: @task.Priority | Status: @task.Status.Name
+                        </p>
+                        <small class="text-muted">Planned Date: @task.RealizationPlanned?.ToString("yyyy-MM-dd")</small>
+                    </div>
+                </li>
+            }
+        </ul>
+    </div>
+
+    <!-- Separator -->
+    <div class="separator my-3"></div>
+
+    <!-- Zadania Completed -->
+    <div class="p-3 border">
+        <h5 class="mb-4 text-center">Completed</h5>
+        <ul class="list-group">
+            @foreach (var task in completedTasks)
             {
                 <li class="list-group-item" @onclick="() => AddEditTask(task.Id)" style="cursor: pointer;">
                     <div>
@@ -31,34 +61,34 @@
 </div>
 
 @code {
-    private List<TaskModel> tasks = new List<TaskModel>();
-
-    // private MarkupString GetPriorityMarkup(string priority)
-    // {
-    //     string label = "[?]";
-    //     string color = "gray";
-
-    //     if (!string.IsNullOrWhiteSpace(priority) && priority.Contains("["))
-    //     {
-    //         var startIndex = priority.IndexOf("[");
-    //         var endIndex = priority.IndexOf("]");
-    //         if (startIndex >= 0 && endIndex > startIndex)
-    //         {
-    //             label = priority.Substring(startIndex, endIndex - startIndex + 1);
-
-    //             if (label == "[L]") color = "gray";
-    //             else if (label == "[N]") color = "green";
-    //             else if (label == "[H]") color = "red";
-    //         }
-    //     }
-
-    //     return new MarkupString($"<span style='color: {color};'>{label}</span>");
-    // }
+    private List<TaskModel> activeTasks = new List<TaskModel>();
+    private List<TaskModel> completedTasks = new List<TaskModel>();
+    private User activeUser;
 
     protected override async Task OnInitializedAsync()
     {
-        tasks = await TaskService.GetTasksAsync();
+        activeUser = UserService.CurrentUser;
+
+        List<TaskModel> allTasks = new List<TaskModel>();
+
+        if (activeUser?.AdminRights == true)
+        {
+            allTasks = await TaskService.GetTasksAsync();
+        }
+        else
+        {
+            allTasks = (await TaskService.GetTasksAsync())
+                .Where(t =>
+                    t.AssignedToId == activeUser.Id ||
+                    t.ReviewerId == activeUser.Id ||
+                    t.TestId == activeUser.Id)
+                .ToList();
+        }
+
+        activeTasks = allTasks.Where(t => t.Status.Name != "Completed").ToList();
+        completedTasks = allTasks.Where(t => t.Status.Name == "Completed").ToList();
     }
+
 
     private void AddEditTask(int taskId)
     {
