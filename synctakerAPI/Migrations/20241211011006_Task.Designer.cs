@@ -12,8 +12,8 @@ using synctakerAPI.Core;
 namespace synctakerAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241208231804_AddTask")]
-    partial class AddTask
+    [Migration("20241211011006_Task")]
+    partial class Task
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
