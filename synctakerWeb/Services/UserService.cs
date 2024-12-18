@@ -47,5 +47,17 @@ public class UserService
         return await _httpClient.GetFromJsonAsync<List<User>>("/User/users");
     }
 
+    public async Task<bool> CreateUserAsync(UserCreateRequest request)
+    {
+        var response = await _httpClient.PostAsJsonAsync("/User/create", request);
+        return response.IsSuccessStatusCode;
+    }
+
+    public async Task<bool> DeleteUserAsync(int userId)
+    {
+        var response = await _httpClient.DeleteAsync($"/User/{userId}");
+        return response.IsSuccessStatusCode;
+    }
+
     public User CurrentUser { get; set; } // Stores logged User
 }
